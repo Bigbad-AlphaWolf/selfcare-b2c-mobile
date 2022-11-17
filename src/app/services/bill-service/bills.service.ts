@@ -13,7 +13,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { tap, map, catchError } from 'rxjs/operators';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 import { MonthOem } from 'src/app/models/month.model';
-import { BillPaymentModel } from 'src/app/models/bill-payment.model';
+import { BillPaymentCbModel, BillPaymentCbResponseModel, BillPaymentModel } from 'src/app/models/bill-payment.model';
 import { OemLoggingService } from '../oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -27,6 +27,8 @@ const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 const paybillsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bill-payment`;
 const unpaidBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/unpaid-bill`;
 const billAmountLimitEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/bill-amount-limit`;
+const billPayBycbInitEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/card-bill-payment`;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -192,17 +194,7 @@ export class BillsService {
     this.downloadBill(bill);
     bill.downloading = false;
   }
-  // downloadUserBillAPI(bill: any) {
-  //   // FollowAnalytics.logEvent('download_bill', this.currentNumber);
-  //   bill.downloading = true;
-
-  //   const pdfWindow = window.open('');
-  //   pdfWindow.document.write(
-  //     // tslint:disable-next-line: quotemark
-  //     "<iframe width='100%' height='100%' src='" + bill.url + "'></iframe>"
-  //   );
-  //   bill.downloading = false;
-  // }
+  
   convertBase64ToBlob(b64Data, contentType): Blob {
     contentType = contentType || '';
     const sliceSize = 512;
@@ -246,17 +238,6 @@ export class BillsService {
     window.location.href = MAIL_URL;
   }
 
-  // downloadBillPackage(billPack: any) {
-  //   const numeroClient = billPack.ncli;
-  //   const mois = billPack.moisfact;
-  //   const annee = billPack.annefact;
-  //   const tranche = billPack.tranche;
-  //   const groupage = billPack.groupage;
-  //   return this.http.get(
-  //     `${billsPackageDownloadEndpoint}/pdf/${numeroClient}/${mois}/${annee}/${tranche}/${groupage}`
-  //   );
-  // }
-
   downloadUserBillPackageAPI(billPack: any) {
     // FollowAnalytics.logEvent('download_bill', this.currentNumber);
     billPack.downloading = true;
@@ -268,40 +249,6 @@ export class BillsService {
     );
     billPack.downloading = false;
   }
-
-  // downloadUserBillPackage(billPack: any) {
-  //   billPack.downloading = true;
-  //   this.downloadBillPackage(billPack).subscribe(
-  //     (res: any) => {
-  //       billPack.downloading = false;
-  //       const base64 = res.file;
-  //       if (navigator.userAgent.match(/crios|CriOS/i)) {
-  //         // Only for chrome on IOS
-  //         const pdfWindow = window.open('');
-  //         pdfWindow.document.write(
-  //           // tslint:disable-next-line: quotemark
-  //           "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
-  //             encodeURI(base64) +
-  //             // tslint:disable-next-line: quotemark
-  //             "'></iframe>"
-  //         );
-  //       } else {
-  //         const linkSource = `data:application/pdf;base64,${base64}`;
-  //         const downloadLink = document.createElement('a');
-  //         const fileName = `FACTURE_${billPack.ncli}`;
-  //         downloadLink.href = linkSource;
-  //         downloadLink.download = fileName;
-  //         document.body.appendChild(downloadLink);
-  //         downloadLink.click();
-  //         document.body.removeChild(downloadLink);
-  //       }
-  //     },
-  //     () => {
-  //       billPack.downloading = false;
-  //       this.openNotAvailableDialog();
-  //     }
-  //   );
-  // }
 
   getIdClient() {
     return this.dashboardService.getIdClient();
@@ -343,5 +290,9 @@ export class BillsService {
         return res;
       })
     );
+  }
+
+  initBilPaymentByBankCard(payload: BillPaymentCbModel) {
+    return this.http.post<BillPaymentCbResponseModel>(`${billPayBycbInitEndpoint}`, payload)
   }
 }

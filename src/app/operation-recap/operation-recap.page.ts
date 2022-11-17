@@ -27,6 +27,7 @@ import {
   OPERATION_PAY_ORANGE_BILLS,
   BALANCE_INSUFFICIENT_ERROR,
   OPERATION_ABONNEMENT_WIDO,
+  PAYMENT_MOD_BANK_CARD,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -63,14 +64,17 @@ import { catchError, tap } from 'rxjs/operators';
 import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from '../utils/utils';
+import { BillPaymentCbModel } from '../models/bill-payment.model';
+import { BillsService } from '../services/bill-service/bills.service';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
-  selector: 'app-operation-recap',
-  templateUrl: './operation-recap.page.html',
-  styleUrls: ['./operation-recap.page.scss'],
+  selector: "app-operation-recap",
+  templateUrl: "./operation-recap.page.html",
+  styleUrls: ["./operation-recap.page.scss"],
 })
 export class OperationRecapPage implements OnInit {
-  static ROUTE_PATH = '/operation-recap';
+  static ROUTE_PATH = "/operation-recap";
   opXtras: OperationExtras = {};
   passChoosen: any;
   recipientMsisdn: string;
@@ -148,6 +152,7 @@ export class OperationRecapPage implements OnInit {
   isLightMod: boolean;
   checkingAmount: boolean;
   error: string;
+  isIos: boolean;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -163,7 +168,9 @@ export class OperationRecapPage implements OnInit {
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
     private feeService: FeesService,
-    private passAbonnementWido: PassAbonnementWidoService
+    private passAbonnementWido: PassAbonnementWidoService,
+    private billsService: BillsService,
+    private iab: InAppBrowser
   ) {}
 
   ngOnInit() {
@@ -200,7 +207,11 @@ export class OperationRecapPage implements OnInit {
               break;
             case OPERATION_TYPE_PASS_VOYAGE:
             case OPERATION_TYPE_PASS_INTERNATIONAL:
-              this.recipientName = this.opXtras.recipientFromContact ? this.opXtras.recipientFirstname + ' ' + this.opXtras.recipientLastname : '';
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                  " " +
+                  this.opXtras.recipientLastname
+                : "";
               this.buyPassPayload = {
                 destinataire: this.recipientMsisdn,
                 pass: this.opXtras.pass,
@@ -212,11 +223,14 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount + this.opXtras.fee;
               this.transferOMWithCodePayload.amount = this.opXtras.amount;
               this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-              this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
-              this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
+              this.transferOMWithCodePayload.prenom_receiver =
+                this.opXtras.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver =
+                this.opXtras.recipientLastname;
               this.recipientFirstName = this.opXtras.recipientFirstname;
               this.recipientLastName = this.opXtras.recipientLastname;
-              this.recipientName = this.recipientFirstName + ' ' + this.recipientLastName;
+              this.recipientName =
+                this.recipientFirstName + " " + this.recipientLastName;
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TRANSFER_OM:
@@ -229,7 +243,11 @@ export class OperationRecapPage implements OnInit {
               this.transferOMPayload.cashout_fees = this.opXtras.fee;
               this.transferOMPayload.country = this.opXtras.country;
               this.transferOMPayload.reason = this.opXtras.reason;
-              if (this.purchaseType === OPERATION_TRANSFER_OM) this.recipientName = this.opXtras.recipientFirstname + ' ' + this.opXtras.recipientLastname;
+              if (this.purchaseType === OPERATION_TRANSFER_OM)
+                this.recipientName =
+                  this.opXtras.recipientFirstname +
+                  " " +
+                  this.opXtras.recipientLastname;
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TYPE_MERCHANT_PAYMENT:
@@ -246,7 +264,11 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_TYPE_RECHARGE_CREDIT:
               this.amount = this.opXtras.amount;
               this.paymentMod = PAYMENT_MOD_OM;
-              this.recipientName = this.opXtras.recipientFromContact ? this.opXtras.recipientFirstname + ' ' + this.opXtras.recipientLastname : '';
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                  " " +
+                  this.opXtras.recipientLastname
+                : "";
               this.offerPlan = this.opXtras.offerPlan;
               break;
             case OPERATION_RAPIDO:
@@ -270,16 +292,25 @@ export class OperationRecapPage implements OnInit {
   }
 
   async checkBuyPassDeeplink(): Promise<any> {
-    const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi') || history?.state?.ppi;
+    const pricePlanIndex =
+      +this.route.snapshot.paramMap.get("ppi") || history?.state?.ppi;
     if (pricePlanIndex) {
-      const passByPPi: any = await this.passService.getPassByPPI(pricePlanIndex);
+      const passByPPi: any = await this.passService.getPassByPPI(
+        pricePlanIndex
+      );
       if (passByPPi.error) {
         this.appRouting.goToDashboard();
         return;
       }
       this.recipientMsisdn = this.currentUserNumber;
-      this.purchaseType = passByPPi.passType === 'INTERNET' ? OPERATION_TYPE_PASS_INTERNET : OPERATION_TYPE_PASS_ILLIMIX;
-      this.passChoosen = passByPPi.passType === 'INTERNET' ? passByPPi.passInternet : passByPPi.passIllimix;
+      this.purchaseType =
+        passByPPi.passType === "INTERNET"
+          ? OPERATION_TYPE_PASS_INTERNET
+          : OPERATION_TYPE_PASS_ILLIMIX;
+      this.passChoosen =
+        passByPPi.passType === "INTERNET"
+          ? passByPPi.passInternet
+          : passByPPi.passIllimix;
       this.buyPassPayload = {
         destinataire: this.recipientMsisdn,
         pass: this.passChoosen,
@@ -292,26 +323,37 @@ export class OperationRecapPage implements OnInit {
   }
 
   async checkTransferOMDeeplink() {
-    let amount = +this.route.snapshot.paramMap.get('amount');
-    const msisdn = this.route.snapshot.paramMap.get('msisdn');
+    let amount = +this.route.snapshot.paramMap.get("amount");
+    const msisdn = this.route.snapshot.paramMap.get("msisdn");
     if (msisdn) {
-      const msisdnHasOM = await this.orangeMoneyService.checkUserHasAccount(msisdn).toPromise();
-      this.purchaseType = msisdnHasOM ? OPERATION_TRANSFER_OM : OPERATION_TRANSFER_OM_WITH_CODE;
+      const msisdnHasOM = await this.orangeMoneyService
+        .checkUserHasAccount(msisdn)
+        .toPromise();
+      this.purchaseType = msisdnHasOM
+        ? OPERATION_TRANSFER_OM
+        : OPERATION_TRANSFER_OM_WITH_CODE;
       this.recipientMsisdn = msisdn;
       this.paymentMod = PAYMENT_MOD_OM;
       if (!msisdnHasOM) {
-        const fees = await this.feeService.getFeesByOMService(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE, msisdn).toPromise();
-        const fee = fees.find((fee: FeeModel) => amount <= fee.max && amount >= fee.min);
+        const fees = await this.feeService
+          .getFeesByOMService(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE, msisdn)
+          .toPromise();
+        const fee = fees.find(
+          (fee: FeeModel) => amount <= fee.max && amount >= fee.min
+        );
         amount = fee ? amount + fee.effective_fees : amount;
         const response = await this.openSetRecipientNamesModal();
         this.amount = amount;
         this.transferOMWithCodePayload.amount = amount;
         this.transferOMWithCodePayload.msisdn2 = msisdn;
-        this.transferOMWithCodePayload.prenom_receiver = response.recipientFirstname;
-        this.transferOMWithCodePayload.nom_receiver = response.recipientLastname;
+        this.transferOMWithCodePayload.prenom_receiver =
+          response.recipientFirstname;
+        this.transferOMWithCodePayload.nom_receiver =
+          response.recipientLastname;
         this.recipientFirstName = response.recipientFirstname;
         this.recipientLastName = response.recipientLastname;
-        this.recipientName = this.recipientFirstName + ' ' + this.recipientLastName;
+        this.recipientName =
+          this.recipientFirstName + " " + this.recipientLastName;
         this.ref.detectChanges();
         return of(response).toPromise();
       } else {
@@ -319,7 +361,7 @@ export class OperationRecapPage implements OnInit {
         this.transferOMPayload.amount = this.amount;
         this.transferOMPayload.msisdn2 = this.recipientMsisdn;
         this.ref.detectChanges();
-        return of('hasOM').toPromise();
+        return of("hasOM").toPromise();
       }
     } else {
       return of(null).toPromise();
@@ -329,7 +371,7 @@ export class OperationRecapPage implements OnInit {
   async openSetRecipientNamesModal(): Promise<any> {
     const modal = await this.modalController.create({
       component: SetRecipientNamesModalComponent,
-      cssClass: 'select-recipient-modal',
+      cssClass: "select-recipient-modal",
       backdropDismiss: false,
     });
     await modal.present();
@@ -344,9 +386,11 @@ export class OperationRecapPage implements OnInit {
   }
 
   getCurrentNumSubscription() {
-    this.authServ.getSubscriptionForTiers(this.currentUserNumber).subscribe((res: SubscriptionModel) => {
-      this.subscriptionInfos = res;
-    });
+    this.authServ
+      .getSubscriptionForTiers(this.currentUserNumber)
+      .subscribe((res: SubscriptionModel) => {
+        this.subscriptionInfos = res;
+      });
   }
 
   pay() {
@@ -384,15 +428,18 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_USAGE:
         this.buyPassUsage();
         break;
-      case OPERATION_TYPE_PAY_BILL:
       case OPERATION_TYPE_TERANGA_BILL:
       case OPERATION_TYPE_SENELEC_BILLS:
       case OPERATION_TYPE_SENEAU_BILLS:
         const amountTocheck =
-          this.purchaseType === OPERATION_TYPE_SENELEC_BILLS || this.purchaseType === OPERATION_TYPE_SENEAU_BILLS
-            ? this.opXtras?.invoice?.montantFacture + this.opXtras?.fee?.effective_fees
+          this.purchaseType === OPERATION_TYPE_SENELEC_BILLS ||
+          this.purchaseType === OPERATION_TYPE_SENEAU_BILLS
+            ? this.opXtras?.invoice?.montantFacture +
+              this.opXtras?.fee?.effective_fees
             : this.opXtras?.invoice?.montantFacture;
         this.checkOMBalanceSuffiency(amountTocheck);
+      case OPERATION_TYPE_PAY_BILL:
+        this.setPaymentMod();
       default:
         break;
     }
@@ -400,12 +447,16 @@ export class OperationRecapPage implements OnInit {
 
   suscribeToWido(recipientMsisdn: string, ppi: string, logInfos: any) {
     this.passAbonnementWido
-      .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi, contentId: +this.passChoosen?.contentId })
+      .suscribeToWido({
+        msisdn: recipientMsisdn,
+        packId: +ppi,
+        contentId: +this.passChoosen?.contentId,
+      })
       .pipe(
-        tap(res => {
-          this.transactionSuccessful({ code: '0' }, logInfos);
+        tap((res) => {
+          this.transactionSuccessful({ code: "0" }, logInfos);
         }),
-        catchError(err => {
+        catchError((err) => {
           this.transactionFailure(err, logInfos);
           return throwError(err);
         })
@@ -424,20 +475,23 @@ export class OperationRecapPage implements OnInit {
     this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
       () => {
         this.buyingPass = false;
-        this.sendFollowLogs('event', this.purchaseType, logInfos);
+        this.sendFollowLogs("event", this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
           buyForMe: true,
         });
       },
-      err => {
+      (err) => {
         this.buyingPass = false;
-        const activationErrorMsg = err && err.error && err.error.message ? err.error.message : 'Une erreur est survenue';
+        const activationErrorMsg =
+          err && err.error && err.error.message
+            ? err.error.message
+            : "Une erreur est survenue";
         const followDetails = Object.assign({}, logInfos, {
           error_code: err.status,
         });
-        this.sendFollowLogs('error', this.purchaseType, followDetails);
+        this.sendFollowLogs("error", this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -449,18 +503,33 @@ export class OperationRecapPage implements OnInit {
   }
 
   async setPaymentMod() {
-    let passIlliflex = this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX ? this.passChoosen : null;
+    let passIlliflex =
+      this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+        ? this.passChoosen
+        : null;
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
-      cssClass: 'set-channel-payment-modal',
+      cssClass: "set-channel-payment-modal",
       componentProps: {
         pass: this.passChoosen,
         purchaseType: this.purchaseType,
         passIlliflex,
       },
     });
-    modal.onDidDismiss().then(response => {
-      let eventName = this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX ? 'Buy_illiflex_payment_mod' : 'Buy_pass_payment_mod';
+    modal.onDidDismiss().then((response) => {
+      let eventName =
+        this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+          ? "Buy_illiflex_payment_mod"
+          : "Buy_pass_payment_mod";
+      if (this.purchaseType === OPERATION_TYPE_PAY_BILL) {
+        this.paymentMod = response?.data?.paymentMod;
+        if (this.paymentMod === PAYMENT_MOD_BANK_CARD) {
+          this.initPaymentByCB();
+        } else if (this.paymentMod === PAYMENT_MOD_OM) {
+          this.checkOMBalanceSuffiency(this.opXtras?.invoice?.montantFacture);
+        }
+        return;
+      }
       if (response.data && response.data.paymentMod === PAYMENT_MOD_CREDIT) {
         this.paymentMod = PAYMENT_MOD_CREDIT;
         if (this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) {
@@ -469,15 +538,77 @@ export class OperationRecapPage implements OnInit {
           // pass internet, illimix, allo, ...
           this.payWithCredit();
         }
-        this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload({ paymentMod: PAYMENT_MOD_CREDIT }));
+        this.oemLoggingService.registerEvent(
+          eventName,
+          convertObjectToLoggingPayload({ paymentMod: PAYMENT_MOD_CREDIT })
+        );
       }
       if (response.data && response.data.paymentMod === PAYMENT_MOD_OM) {
         this.paymentMod = PAYMENT_MOD_OM;
         this.openPinpad();
-        this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload({ paymentMod: PAYMENT_MOD_OM }));
+        this.oemLoggingService.registerEvent(
+          eventName,
+          convertObjectToLoggingPayload({ paymentMod: PAYMENT_MOD_OM })
+        );
       }
     });
     return await modal.present();
+  }
+
+  initPaymentByCB() {
+    this.buyingPass = true;
+    const invoice = this.opXtras.invoice;
+    this.authServ
+      .getSubscriptionForTiers(invoice.numeroTelephone)
+      .pipe(
+        tap((sub) => {
+          const nclient = sub?.clientCode;
+          const paymentInitPayload: BillPaymentCbModel = {
+            nclient,
+            billingAccountId: invoice?.numeroTelephone,
+            billNumber: invoice?.nfact,
+            payerMsisdn: this.currentUserNumber,
+            paymentCategory: "FIXE",
+            paymentAmount: invoice?.montantFacture.toString(),
+          };
+          this.billsService
+            .initBilPaymentByBankCard(paymentInitPayload)
+            .pipe(
+              tap((res) => {
+                this.openInAppBrowser(res.paymentUrl);
+                this.buyingPass = false;
+              }),
+              catchError((err) => {
+                this.buyingPass = false;
+                console.log(err);
+                return throwError(err);
+              })
+            )
+            .subscribe();
+        })
+      )
+      .subscribe();
+  }
+
+  openInAppBrowser(url: string) {
+    const options: InAppBrowserOptions = this.isIos
+      ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        }
+      : {};
+    this.iab
+      .create(url, '_blank', options)
+      .on('exit')
+      .subscribe(event => {
+        this.router.navigate(["/"])
+      });
   }
 
   async openPinpad() {
@@ -485,7 +616,7 @@ export class OperationRecapPage implements OnInit {
       component: NewPinpadModalPage,
       backdropDismiss: true,
       swipeToClose: true,
-      cssClass: 'pin-pad-modal',
+      cssClass: "pin-pad-modal",
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
@@ -500,7 +631,7 @@ export class OperationRecapPage implements OnInit {
         illiflexPayload: this.passChoosen,
       },
     });
-    modal.onDidDismiss().then(response => {
+    modal.onDidDismiss().then((response) => {
       if (response.data && response.data.success) {
         this.openSuccessFailModal(
           {
@@ -508,7 +639,9 @@ export class OperationRecapPage implements OnInit {
             historyTransactionItem: response.data.transferToBlock,
             success: true,
             msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
-            buyForMe: this.recipientMsisdn === this.orangeMoneyService.getOrangeMoneyNumber(),
+            buyForMe:
+              this.recipientMsisdn ===
+              this.orangeMoneyService.getOrangeMoneyNumber(),
           },
           response.data.operationPayload
         );
@@ -530,11 +663,11 @@ export class OperationRecapPage implements OnInit {
     params.opXtras = this.opXtras;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
-      cssClass: 'success-or-fail-modal',
+      cssClass: "success-or-fail-modal",
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then(res => {
+    modal.onDidDismiss().then((res) => {
       if (orangeMoneyData) {
         this.suggestFaceId(orangeMoneyData);
       }
@@ -547,7 +680,7 @@ export class OperationRecapPage implements OnInit {
     if (status === FACE_ID_PERMISSIONS.LATER || !status) {
       const modal = await this.modalController.create({
         component: FaceIdRequestModalComponent,
-        cssClass: 'select-recipient-modal',
+        cssClass: "select-recipient-modal",
         backdropDismiss: true,
         componentProps: { operationData },
       });
@@ -557,7 +690,10 @@ export class OperationRecapPage implements OnInit {
   }
 
   getPassBoosters(pass: any) {
-    return getActiveBoostersForSpecificPass(pass, BoosterService.lastBoostersList);
+    return getActiveBoostersForSpecificPass(
+      pass,
+      BoosterService.lastBoostersList
+    );
   }
 
   isBoosterTraceTV() {
@@ -576,11 +712,18 @@ export class OperationRecapPage implements OnInit {
 
   payWithCredit(hmac?: string) {
     this.buyingPass = true;
-    const codeIN = this.passChoosen.passPromo ? this.passChoosen.passPromo.price_plan_index : this.passChoosen.price_plan_index;
-    const amount = this.passChoosen.passPromo ? +this.passChoosen.passPromo.tarif : +this.passChoosen.tarif;
+    const codeIN = this.passChoosen.passPromo
+      ? this.passChoosen.passPromo.price_plan_index
+      : this.passChoosen.price_plan_index;
+    const amount = this.passChoosen.passPromo
+      ? +this.passChoosen.passPromo.tarif
+      : +this.passChoosen.tarif;
     const msisdn = this.currentUserNumber;
     const receiver = this.recipientMsisdn;
-    const type = this.purchaseType === OPERATION_TYPE_PASS_INTERNET ? 'internet' : 'illimix';
+    const type =
+      this.purchaseType === OPERATION_TYPE_PASS_INTERNET
+        ? "internet"
+        : "illimix";
     const payload: BuyPassModel = {
       type,
       codeIN,
@@ -619,7 +762,7 @@ export class OperationRecapPage implements OnInit {
       receiver: this.opXtras.recipientMsisdn,
       msisdn: this.currentUserNumber,
       serviceId: this.opXtras.pass.serviceId,
-      type: 'usage',
+      type: "usage",
       serviceType: this.opXtras.pass.typeUsage.code,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
@@ -629,10 +772,10 @@ export class OperationRecapPage implements OnInit {
       ppi: this.opXtras.pass.price_plan_index,
     };
     this.dashboardService.buyPassByCredit(payload).subscribe(
-      res => {
+      (res) => {
         this.transactionSuccessful(res, logInfos);
       },
-      err => {
+      (err) => {
         this.transactionFailure(err, logInfos);
       }
     );
@@ -649,14 +792,16 @@ export class OperationRecapPage implements OnInit {
     this.illiflexService.buyIlliflex(this.passChoosen).subscribe(
       () => {
         this.buyingPass = false;
-        this.sendFollowLogs('event', this.purchaseType, logInfos);
+        this.sendFollowLogs("event", this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.recipientMsisdn,
-          buyForMe: this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+          buyForMe:
+            this.recipientMsisdn ===
+            this.dashboardService.getCurrentPhoneNumber(),
         });
       },
-      err => {
+      (err) => {
         this.buyingPass = false;
         let errorMsg;
         if (err.status && err.status === 400) {
@@ -667,7 +812,7 @@ export class OperationRecapPage implements OnInit {
         const followDetails = Object.assign({}, logInfos, {
           error_code: err.status,
         });
-        this.sendFollowLogs('error', this.purchaseType, followDetails);
+        this.sendFollowLogs("error", this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.recipientMsisdn,
@@ -683,22 +828,23 @@ export class OperationRecapPage implements OnInit {
 
   transactionSuccessful(res: any, logInfos: FollowOemlogPurchaseInfos) {
     this.buyingPass = false;
-    if (res.code !== '0') {
+    if (res.code !== "0") {
       this.buyPassFailed = true;
       this.buyPassErrorMsg = res.message;
       const followDetails = Object.assign({}, logInfos, {
         error_code: res.code,
       });
-      this.sendFollowLogs('error', this.purchaseType, followDetails);
+      this.sendFollowLogs("error", this.purchaseType, followDetails);
     } else {
       this.buyPassFailed = false;
       const followDetails = logInfos;
-      this.sendFollowLogs('event', this.purchaseType, followDetails);
+      this.sendFollowLogs("event", this.purchaseType, followDetails);
     }
     this.openSuccessFailModal({
       success: !this.buyPassFailed,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
-      buyForMe: this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+      buyForMe:
+        this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
       errorCode: res?.code,
       recipientMsisdn: this.recipientMsisdn,
@@ -707,18 +853,22 @@ export class OperationRecapPage implements OnInit {
 
   transactionFailure(err: any, logInfos: FollowOemlogPurchaseInfos) {
     this.buyingPass = false;
-    this.buyPassErrorMsg = err.error && err.error.message ? err.error.message || err?.error?.respMsg : 'Service indisponible. Veuillez réessayer ultérieurement';
+    this.buyPassErrorMsg =
+      err.error && err.error.message
+        ? err.error.message || err?.error?.respMsg
+        : "Service indisponible. Veuillez réessayer ultérieurement";
     if (err?.error?.respMsg) {
       this.buyPassErrorMsg = err?.error?.respMsg;
     }
     const followDetails = Object.assign({}, logInfos, {
       error_code: err.status,
     });
-    this.sendFollowLogs('error', this.purchaseType, followDetails);
+    this.sendFollowLogs("error", this.purchaseType, followDetails);
     this.openSuccessFailModal({
       success: false,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
-      buyForMe: this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+      buyForMe:
+        this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
       errorCode: err?.error?.code,
       recipientMsisdn: this.recipientMsisdn,
@@ -726,47 +876,62 @@ export class OperationRecapPage implements OnInit {
   }
 
   get operationTypeRecap() {
-    return ['RECHARGEMENT_CREDIT', OPERATION_TYPE_PASS_VOYAGE, 'OPERATION_WOYOFAL', OPERATION_RAPIDO, OPERATION_XEWEUL].includes(this.purchaseType);
+    return [
+      "RECHARGEMENT_CREDIT",
+      OPERATION_TYPE_PASS_VOYAGE,
+      "OPERATION_WOYOFAL",
+      OPERATION_RAPIDO,
+      OPERATION_XEWEUL,
+    ].includes(this.purchaseType);
   }
 
-  sendFollowLogs(type: 'event' | 'error', purchaseType: string, logDetails: any) {
+  sendFollowLogs(
+    type: "event" | "error",
+    purchaseType: string,
+    logDetails: any
+  ) {
     let eventName;
     switch (purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
-        eventName = 'Achat_Pass_internet';
+        eventName = "Achat_Pass_internet";
         break;
       case OPERATION_TYPE_PASS_USAGE:
         eventName = `Achat_Pass_usage_${this.opXtras.serviceUsage.code.toLowerCase()}`;
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        eventName = 'Achat_Pass_illimix';
+        eventName = "Achat_Pass_illimix";
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
-        eventName = 'Achat_Pass_voyage';
+        eventName = "Achat_Pass_voyage";
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        eventName = 'Achat_Pass_illiflex';
+        eventName = "Achat_Pass_illiflex";
         break;
       case OPERATION_ENABLE_DALAL:
-        eventName = 'Dalal_activation';
+        eventName = "Dalal_activation";
         break;
       case OPERATION_ABONNEMENT_WIDO:
-        eventName = 'Achat_abonnement_wido';
+        eventName = "Achat_abonnement_wido";
         break;
       default:
         break;
     }
-    if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS) eventName += '_bons_plans';
-    eventName += type === 'event' ? '_Success' : '_Error';
-    console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
-    this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(logDetails), ANALYTICS_PROVIDER.ALL);
+    if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS)
+      eventName += "_bons_plans";
+    eventName += type === "event" ? "_Success" : "_Error";
+    console.log("followSuccess", logDetails, "op", purchaseType, eventName);
+    this.oemLoggingService.registerEvent(
+      eventName,
+      convertObjectToLoggingPayload(logDetails),
+      ANALYTICS_PROVIDER.ALL
+    );
   }
 
   checkOMBalanceSuffiency(amount) {
     this.checkingAmount = true;
     this.error = null;
     this.orangeMoneyService.checkBalanceSufficiency(amount).subscribe(
-      hasEnoughBalance => {
+      (hasEnoughBalance) => {
         this.checkingAmount = false;
         if (hasEnoughBalance) {
           this.openPinpad();
@@ -774,7 +939,7 @@ export class OperationRecapPage implements OnInit {
           this.error = BALANCE_INSUFFICIENT_ERROR;
         }
       },
-      err => {
+      (err) => {
         this.checkingAmount = false;
         this.openPinpad();
       }
