@@ -529,20 +529,22 @@ export class OrangeMoneyService {
   }
 
   getUserStatus(msisdn: string) {
-    const key = `${OM_STATUS_KEY}_${msisdn}`;
-    const hasExpired = checkStorageElementHasExpired(key, 60 * 60 * 1000);
-    if (!hasExpired) {
-      const storedData = this.localStorageService.getFromLocalStorage(key);
-      return of(storedData);
-    }
-    return this.http.get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`).pipe(
-      map(status => {
-        status.omNumber = msisdn;
-        this.localStorageService.saveToLocalStorage(key, status);
-        this.localStorageService.saveToLocalStorage(`${key}_last_update`, Date.now());
-        return status;
-      })
-    );
+    // const key = `${OM_STATUS_KEY}_${msisdn}`;
+    // const hasExpired = checkStorageElementHasExpired(key, 60 * 60 * 1000);
+    // if (!hasExpired) {
+    //   const storedData = this.localStorageService.getFromLocalStorage(key);
+    //   return of(storedData)
+    // }
+    return this.http
+      .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
+      .pipe(
+        map((status) => {
+          status.omNumber = msisdn;
+          // this.localStorageService.saveToLocalStorage(key, status);
+          // this.localStorageService.saveToLocalStorage(`${key}_last_update`, Date.now())
+          return status;
+        })
+      );
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
