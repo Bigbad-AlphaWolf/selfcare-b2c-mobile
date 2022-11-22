@@ -1,12 +1,8 @@
-<div class="request" >
+<div class="request" (click)="procesRedirection()">
   <div class="content">
     <div class="id">Nᵒ{{ request?.requestId }}</div>
     <div class="description">
-      {{
-        !fullDescription && request?.description?.length > 60
-          ? request?.description?.slice(0, 60) + "..."
-          : request?.description
-      }}
+      {{ !fullDescription && request?.description?.length > 60 ? request?.description?.slice(0, 60) + '...' : request?.description }}
     </div>
   </div>
   <div class="status">
