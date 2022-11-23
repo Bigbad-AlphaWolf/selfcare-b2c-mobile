@@ -1,5 +1,5 @@
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
@@ -71,7 +71,8 @@ export class AppComponent {
     private toastController: ToastController,
     private firebaseDynamicLinks: FirebaseDynamicLinks,
     private bpSargalService: BonsPlansSargalService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private ngZone: NgZone
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -179,7 +180,9 @@ export class AppComponent {
         const result: { deepLink: string; minimumAppVersion: number } = res;
         if (result?.deepLink) {
           const path = result?.deepLink.replace('https://myorangesn.page.link', '');
-          this.goToPage(path);
+          this.ngZone.run(() => {
+            this.goToPage(path);
+          });
           console.log('res onDynamicLink', path);
         }
         console.log(res);
