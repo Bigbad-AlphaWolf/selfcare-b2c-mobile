@@ -45,6 +45,7 @@ export class SelectNumberForBillComponent implements OnInit {
   hasError: boolean;
   errorMessage: string;
   @Input() operation;
+  @Input() isNewService: boolean;
   OPERATION_TYPE_TERANGA_BILL = OPERATION_TYPE_TERANGA_BILL;
   OPERATION_TYPE_PAY_BILL = OPERATION_TYPE_PAY_BILL;
 
@@ -156,7 +157,8 @@ export class SelectNumberForBillComponent implements OnInit {
                   ligne: numero,
                   type: this.selectedOption.value,
                   clientCode,
-                  operationType: this.operation
+                  operationType: this.operation,
+                  isNewService: this.isNewService,
                 },
               });
             } else {

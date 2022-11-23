@@ -44,7 +44,7 @@
     </div>
 
 
-    <div class="item" (click)="setPaymentChannel('BANK_CARD')" *ngIf="purchaseType === OPERATION_TYPE_PAY_BILL">
+    <div class="item" (click)="setPaymentChannel('BANK_CARD')" *ngIf="canPayBillsByCB && purchaseType === OPERATION_TYPE_PAY_BILL">
       <mat-radio-button *ngIf="!errorMsg" #bankCardChoice [id]="'bank-payment' | generateIdForTA"
         [checked]="selectedPaymentChannel === 'BANK_CARD'">
       </mat-radio-button>

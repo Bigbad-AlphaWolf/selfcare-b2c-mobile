@@ -15,6 +15,7 @@ export class SetPaymentChannelModalPage implements OnInit {
   @Input() pass;
   @Input() purchaseType;
   @Input() passIlliflex;
+  @Input() canPayBillsByCB: boolean;
   selectedPaymentChannel: 'CREDIT' | 'ORANGE_MONEY';
   soldeCredit = UserConsoService.lastRechargementCompteurValue;
 	checkingAmount: boolean;
