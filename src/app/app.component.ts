@@ -30,6 +30,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
+import { DashboardService } from './services/dashboard-service/dashboard.service';
 
 const { SERVER_API_URL } = environment;
 
@@ -72,7 +73,8 @@ export class AppComponent {
     private firebaseDynamicLinks: FirebaseDynamicLinks,
     private bpSargalService: BonsPlansSargalService,
     private notificationService: NotificationService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private dashbService: DashboardService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -156,6 +158,10 @@ export class AppComponent {
   }
 
   async setupFCMNotifications() {
+    const userHasLogin = !!this.authServ.getToken();
+    if (userHasLogin) {
+      this.authServ.setUserFirebaseId(this.dashbService.getMainPhoneNumber()).subscribe();
+    }
     //this.fcm.onNotification().subscribe((data) => {
     //  console.log('received', data);
     //  if (data.wasTapped) {

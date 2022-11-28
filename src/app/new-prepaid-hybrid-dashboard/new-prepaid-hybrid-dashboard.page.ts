@@ -73,10 +73,10 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
         case CONSO:
           this.setSlide(1, true);
           break;
-        case SERVICES:
+        case HUB_OM_TAB:
           this.setSlide(2, true);
           break;
-        case ASSISTANCE:
+        case SERVICES:
           this.setSlide(3, true);
           break;
         case ASSISTANCE:
