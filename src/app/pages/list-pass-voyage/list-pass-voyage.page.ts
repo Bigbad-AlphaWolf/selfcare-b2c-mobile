@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
 import { PassVoyageService } from 'src/app/services/pass-voyage/pass-voyage.service';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, throwError } from 'rxjs';
 import { CountryPass } from 'src/app/models/country-pass.model';
-import { tap, delay, map } from 'rxjs/operators';
+import { tap, delay, map, catchError, finalize } from 'rxjs/operators';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { PassVoyage } from 'src/app/models/enums/pass-voyage.enum';
-import { INTERNATIONAL_PASSES_INDICATIF_ARRAY } from 'src/shared';
+import { getOrderedListCategory, INTERNATIONAL_PASSES_INDICATIF_ARRAY } from 'src/shared';
 
 @Component({
   selector: 'app-list-pass-voyage',
@@ -31,20 +31,15 @@ export class ListPassVoyagePage implements OnInit {
   tabHeaderItems: any[] = [];
   codeFormule: any;
   opXtras: OperationExtras;
-  constructor(
-    private passVoyageService: PassVoyageService,
-    private navCtl: NavController
-  ) {}
+  hasError: boolean;
+  constructor(private passVoyageService: PassVoyageService, private navCtl: NavController) {}
 
   ngOnInit() {
     //1 Get countries
     this.isLoading = true;
     this.countries$ = this.passVoyageService.fetchCountries().pipe(
       map((res: CountryPass[]) => {
-        return res.filter(
-          (country) =>
-            !INTERNATIONAL_PASSES_INDICATIF_ARRAY.includes(country.indicatif)
-        );
+        return res.filter(country => !INTERNATIONAL_PASSES_INDICATIF_ARRAY.includes(country.indicatif));
       }),
       tap((countries: any) => {
         this.isLoading = false;
@@ -66,29 +61,56 @@ export class ListPassVoyagePage implements OnInit {
     this.activeTabIndex = 0;
     this.passs$ = forkJoin(this.constructPassRequests()).pipe(
       delay(100),
+      finalize(() => {
+        this.isLoading = false;
+      }),
+      catchError(err => {
+        this.hasError = true;
+        return throwError(err);
+      }),
       map((rs: any[]) => {
         this.isLoading = false;
-        let results: any[] = [];
+        const [results] = rs;
+        const response = [];
         this.tabHeaderItems = [];
-        if (rs[0].length) {
+        const pass_appel = results.filter(elt => {
+          return elt.bundleType === PassVoyage.APPEL;
+        });
+        const pass_data = results.filter(elt => {
+          return elt.bundleType === PassVoyage.DATA;
+        });
+        const pass_mixed = results.filter(elt => {
+          return elt.bundleType === PassVoyage.TOUS;
+        });
+
+        if (pass_appel?.length) {
           this.tabHeaderItems.push('Appel');
-          results.push(rs[0]);
+          response.push(pass_appel);
         }
 
-        if (rs[1].length) {
+        if (pass_data?.length) {
           this.tabHeaderItems.push('Internet');
-          results.push(rs[1]);
+          response.push(pass_data);
         }
-        return results;
+
+        if (pass_mixed.length) {
+          const listCategory = this.getCategoryPass(pass_mixed);
+          for (const category of listCategory) {
+            const pass = pass_mixed.filter(elt => elt?.categoriePass?.libelle === category);
+            this.tabHeaderItems.push(category);
+            response.push(pass);
+          }
+        }
+
+        console.log('result', response);
+
+        return response;
       })
     );
   }
 
   constructPassRequests() {
-    return [
-      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.APPEL, this.opXtras.code),
-      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.DATA, this.opXtras.code),
-    ];
+    return [this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.TOUS, this.opXtras.code)];
   }
 
   onCountryChanged($evt: CustomEvent) {
@@ -103,7 +125,7 @@ export class ListPassVoyagePage implements OnInit {
   }
 
   slideChanged() {
-    this.sliders.getActiveIndex().then((index) => {
+    this.sliders.getActiveIndex().then(index => {
       this.activeTabIndex = index;
     });
   }
@@ -115,5 +137,13 @@ export class ListPassVoyagePage implements OnInit {
   choosePass(pass: any) {
     this.opXtras.pass = pass;
     this.navCtl.navigateForward(['/operation-recap'], { state: this.opXtras });
+  }
+
+  getCategoryPass(listPass: any[]) {
+    const categories = listPass.map(item => {
+      return item?.categoriePass;
+    });
+    const responseWithoutDuplication = getOrderedListCategory(categories);
+    return responseWithoutDuplication;
   }
 }
