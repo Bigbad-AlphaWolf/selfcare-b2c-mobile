@@ -16,9 +16,20 @@ export class NotificationService {
   ) {}
 
   handleNotification(notif) {
-    switch (notif?.operationType) {
-      case OPERATION_TYPE_CARD_TO_WALLET:
-        this.openSuccessFailModal(notif);
+    console.log("received notfi", notif);
+    switch (notif?.payload?.pushNotificationType) {
+      case "REMINDER":
+        break;
+      default:
+        switch (notif?.payload?.operationType) {
+          case OPERATION_TYPE_CARD_TO_WALLET:
+            this.openSuccessFailModal(notif?.payload);
+            break;
+          case "FIXE":
+            this;
+            break;
+        }
+        break;
     }
   }
 

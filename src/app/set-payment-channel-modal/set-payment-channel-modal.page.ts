@@ -3,9 +3,9 @@ import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { BALANCE_INSUFFICIENT_ERROR, OPERATION_ABONNEMENT_WIDO } from 'src/shared';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { UserConsoService } from '../services/user-cunsommation-service/user-conso.service';
+import { OPERATION_TYPE_PAY_BILL } from '../utils/operations.constants';
 @Component({
   selector: 'set-payment-channel-modal',
   templateUrl: './set-payment-channel-modal.page.html',
@@ -15,10 +15,12 @@ export class SetPaymentChannelModalPage implements OnInit {
   @Input() pass;
   @Input() purchaseType;
   @Input() passIlliflex;
+  @Input() canPayBillsByCB: boolean;
   selectedPaymentChannel: 'CREDIT' | 'ORANGE_MONEY';
   soldeCredit = UserConsoService.lastRechargementCompteurValue;
 	checkingAmount: boolean;
 	errorMsg: string;
+  OPERATION_TYPE_PAY_BILL = OPERATION_TYPE_PAY_BILL;
   constructor(
     public modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService  ) {}

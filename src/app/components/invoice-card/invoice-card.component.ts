@@ -21,6 +21,7 @@ export class InvoiceCardComponent implements OnInit {
   @Input() allBills: InvoiceOrange[];
   @Input('title') title: string;
   @Input() canPayBills: boolean;
+  @Input() canPayBillsByCB: boolean;
   @Input() componentStyle: 'v1' | 'v2' = 'v1';
   @Input() hideDownloadBlock: boolean;
   @Input() withBorder: boolean;
@@ -66,6 +67,7 @@ export class InvoiceCardComponent implements OnInit {
         numberToRegister: this.numberToRegister,
         counterToFav: this.counterToFav,
         fee,
+        canPayBillsByCB: this.canPayBillsByCB,
       };
       const navExtras: NavigationExtras = { state: opXtras };
       this.navController.navigateForward(['/operation-recap'], navExtras);

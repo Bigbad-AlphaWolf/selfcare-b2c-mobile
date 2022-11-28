@@ -26,7 +26,7 @@
     <div
       class="item"
       (click)="setPaymentChannel('ORANGE_MONEY')"
-      *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index_om : pass?.passPromo?.price_plan_index_om)"
+      *ngIf="purchaseType === OPERATION_TYPE_PAY_BILL || (passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index_om : pass?.passPromo?.price_plan_index_om)"
     >
       <mat-radio-button *ngIf="!errorMsg" #omChoice [id]="'orange-money' | generateIdForTA" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'" >
       </mat-radio-button>
@@ -42,6 +42,20 @@
 				</div>
       </div>
     </div>
+
+
+    <div class="item" (click)="setPaymentChannel('BANK_CARD')" *ngIf="canPayBillsByCB && purchaseType === OPERATION_TYPE_PAY_BILL">
+      <mat-radio-button *ngIf="!errorMsg" #bankCardChoice [id]="'bank-payment' | generateIdForTA"
+        [checked]="selectedPaymentChannel === 'BANK_CARD'">
+      </mat-radio-button>
+      <div class="payment-mod-detail">
+        <div class="payment-mod" [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'BANK_CARD'}">
+          Carte Bancaire
+        </div>
+      </div>
+    </div>
+
+
   </div>
   <button
     class="scb-btn scb-btn-orange"

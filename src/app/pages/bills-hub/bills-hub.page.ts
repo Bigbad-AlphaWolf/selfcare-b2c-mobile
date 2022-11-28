@@ -118,7 +118,7 @@ export class BillsHubPage implements OnInit {
         break;
       case OPERATION_TYPE_PAY_BILL:
       case OPERATION_TYPE_TERANGA_BILL:
-        this.openPayBillModal(billCompany.code);
+        this.openPayBillModal(billCompany.code, billCompany?.newOffer);
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
@@ -131,12 +131,13 @@ export class BillsHubPage implements OnInit {
     }
   }
 
-  async openPayBillModal(operation: string) {
+  async openPayBillModal(operation: string, isTaggedAsNew?: boolean) {
     const modal = await this.modalController.create({
       component: SelectNumberForBillComponent,
       cssClass: 'select-recipient-modal',
       componentProps: {
         operation,
+        isNewService: isTaggedAsNew
       },
     });
     return await modal.present();

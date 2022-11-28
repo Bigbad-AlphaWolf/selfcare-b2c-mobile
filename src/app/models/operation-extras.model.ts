@@ -56,4 +56,6 @@ export interface OperationExtras {
 
   checkRecipient?: boolean;
   blockTrxOMPayload?: any;
+
+  canPayBillsByCB?: boolean;
 }
