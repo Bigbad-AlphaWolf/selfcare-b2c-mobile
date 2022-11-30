@@ -22,89 +22,49 @@
     </div>
   </div>
 </ion-header>
-<ion-content
-  no-bounce
-  has-bouncing="false"
-  forceOverscroll="false"
-  fullscreen="true"
-  mode="ios"
-  [scrollEvents]="true"
->
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" mode="ios" [scrollEvents]="true">
   <div class="content">
     <div class="requests" *ngIf="phoneFix">
       <!-- <div class="head">
         Mes réclamations
       </div> -->
       <div class="requests" *ngIf="requests$ | async as requests">
-        <div class="none" *ngIf="!requests.length">Aucune réclamation pour ce numéro</div>
-          <ng-container *ngIf="requests.length">
-            <div class="title">
-              Statut Actuel
-            </div>
-            <oem-request-card
-              [request]="listRequestWithStatus?.current"
-              (click)="onRequestChoosen(listRequestWithStatus?.current)"
-              [fullDescription]="true"
-            ></oem-request-card>
-            <ng-container *ngIf="listRequestWithStatus?.next?.length">
-              <div class="title">
-                Prochaines étapes
-              </div>
-              <oem-request-card
-                  *ngFor="let req of listRequestWithStatus?.next"
-                [request]="req"
-                (click)="onRequestChoosen(req)"
-              ></oem-request-card>
-            </ng-container>
-            <ng-container *ngIf="listRequestWithStatus?.previous?.length">
-              <div class="title">
-                Anciennes étapes
-              </div>
-              <oem-request-card
-              *ngFor="let req of listRequestWithStatus?.previous"
-              [request]="req"
-            (click)="onRequestChoosen(req)"
-
-          ></oem-request-card>
-            </ng-container>
+        <div class="none" *ngIf="!requests.length">Aucun dérangement pour ce numéro</div>
+        <ng-container *ngIf="requests.length">
+          <div class="title">Statut Actuel</div>
+          <oem-request-card [request]="listRequestWithStatus?.current" (click)="onRequestChoosen(listRequestWithStatus?.current)" [fullDescription]="true"></oem-request-card>
+          <ng-container *ngIf="listRequestWithStatus?.next?.length">
+            <div class="title">Prochaines étapes</div>
+            <oem-request-card *ngFor="let req of listRequestWithStatus?.next" [request]="req" (click)="onRequestChoosen(req)"></oem-request-card>
           </ng-container>
+          <ng-container *ngIf="listRequestWithStatus?.previous?.length">
+            <div class="title">Anciennes étapes</div>
+            <oem-request-card *ngFor="let req of listRequestWithStatus?.previous" [request]="req" (click)="onRequestChoosen(req)"></oem-request-card>
+          </ng-container>
+        </ng-container>
       </div>
     </div>
     <div class="requests" *ngIf="!phoneFix && !isInitRequests">
-      <span class="text">
-        Aucune demande ou réclamation associée à ce numéro
-      </span>
+      <span class="text"> Aucune demande ou dérangement associé à ce numéro </span>
     </div>
     <div class="autre">
-      <div class="head">
-        Autres demandes ou réclamations
-      </div>
+      <div class="head">Autres demandes ou dérangement</div>
       <div class="fieldArea">
         <form novalidate autocomplete="false">
           <mat-form-field class="scb-input-row" appearance="outline">
             <mat-label>Saisir numéro de suivi &nbsp;&nbsp;</mat-label>
-            <input #numberInput matInput type="text" maxlength="20" />
+            <input #numberInput matInput type="number" maxlength="20" />
           </mat-form-field>
         </form>
-        <div
-          class="confirmer"
-          matRipple
-          (click)="onConfirmer()"
-          *ngIf="!isConfirm"
-        >
+        <div class="confirmer" matRipple (click)="onConfirmer()" *ngIf="!isConfirm">
           <span class="btn-confirmer">Confirmer</span>
         </div>
         <div class="is-confirmer" *ngIf="isConfirm">
           <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
         </div>
-
       </div>
-      <div *ngIf="noRequest" class="error-msg scb-text-red-error">
-        Aucune demande ou incident ne correspond au numéro renseigné!
-      </div>
-      <div *ngIf="isNotValid" class="error-msg scb-text-red-error">
-        Veuillez saisir un numéro correct
-      </div>
+      <div *ngIf="noRequest" class="error-msg scb-text-red-error">Aucune demande ou incident ne correspond au numéro renseigné!</div>
+      <div *ngIf="isNotValid" class="error-msg scb-text-red-error">Veuillez saisir un numéro correct</div>
     </div>
   </div>
 </ion-content>
