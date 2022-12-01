@@ -19,7 +19,7 @@ import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
 import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
 import { tap } from 'rxjs/operators';
-import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -162,6 +162,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
           this.userSubscription = souscription;
           this.currentProfile = souscription.profil;
           this.currentFormule = souscription.nomOffre;
+
+          console.log('currentProfile', this.currentProfile);
         });
       }, 1000);
     }

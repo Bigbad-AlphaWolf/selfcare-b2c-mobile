@@ -514,6 +514,7 @@ export class OperationRecapPage implements OnInit {
         pass: this.passChoosen,
         purchaseType: this.purchaseType,
         passIlliflex,
+        canPayBillsByCB: this.opXtras?.canPayBillsByCB
       },
     });
     modal.onDidDismiss().then((response) => {

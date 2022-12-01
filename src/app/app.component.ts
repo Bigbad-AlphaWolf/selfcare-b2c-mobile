@@ -1,5 +1,5 @@
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
@@ -30,6 +30,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
+import { DashboardService } from './services/dashboard-service/dashboard.service';
 
 const { SERVER_API_URL } = environment;
 
@@ -71,7 +72,9 @@ export class AppComponent {
     private toastController: ToastController,
     private firebaseDynamicLinks: FirebaseDynamicLinks,
     private bpSargalService: BonsPlansSargalService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private ngZone: NgZone,
+    private dashbService: DashboardService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -155,6 +158,10 @@ export class AppComponent {
   }
 
   async setupFCMNotifications() {
+    const userHasLogin = !!this.authServ.getToken();
+    if (userHasLogin) {
+      this.authServ.setUserFirebaseId(this.dashbService.getMainPhoneNumber()).subscribe();
+    }
     //this.fcm.onNotification().subscribe((data) => {
     //  console.log('received', data);
     //  if (data.wasTapped) {
@@ -179,7 +186,9 @@ export class AppComponent {
         const result: { deepLink: string; minimumAppVersion: number } = res;
         if (result?.deepLink) {
           const path = result?.deepLink.replace('https://myorangesn.page.link', '');
-          this.goToPage(path);
+          this.ngZone.run(() => {
+            this.goToPage(path);
+          });
           console.log('res onDynamicLink', path);
         }
         console.log(res);
