@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
+import { OPERATION_CONFIRM_RATTACHMENT, REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { ModalController } from '@ionic/angular';
@@ -10,6 +10,13 @@ import { OtpService } from 'src/app/services/otp-service/otp.service';
 import { of, throwError } from 'rxjs';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
+
+interface RattachementModel {
+  msisdn: string;
+  profil: string;
+  formule: string;
+}
 
 @Component({
   selector: 'app-rattach-number-modal',
@@ -23,6 +30,7 @@ export class RattachNumberModalComponent implements OnInit {
   isInputValid: boolean;
   msgError: string;
   mainNumber = this.dashbServ.getMainPhoneNumber();
+  nextStep: string;
   constructor(
     private dialog: MatDialog,
     private modalCon: ModalController,
@@ -53,7 +61,7 @@ export class RattachNumberModalComponent implements OnInit {
     this.isInputValid = isMobile || isFix;
   }
 
-  processRattachement() {
+  async processRattachement() {
     this.isLoading = true;
     this.hasError = false;
     this.msgError = null;
@@ -61,65 +69,49 @@ export class RattachNumberModalComponent implements OnInit {
       numero: this.phoneNumber,
       typeNumero: this.isValidMobileNumber() ? 'MOBILE' : 'FIXE',
     };
-    this.dashbServ
-      .registerNumberToAttach(payload)
-      .pipe(
-        tap(() => {
-          this.openSuccessDialog(payload.numero);
-        })
-      )
-      .subscribe(
-        () => {
-          this.isLoading = false;
-          this.hasError = false;
-          this.nextStepRattachement(true, 'NONE', this.phoneNumber, payload.typeNumero);
+    const alreadyUsed = await this.checkIfPresentInOEMNumbers(payload?.numero);
+    if (alreadyUsed) {
+      this.isLoading = false;
+      this.hasError = true;
+      this.msgError = 'Vous utilisez déjà ce numéro';
+    } else {
+      this.dashbServ
+        .registerNumberToAttach(payload)
+        .pipe(
+          tap(() => {
+            this.openSuccessDialog(payload.numero);
+          })
+        )
+        .subscribe(
+          () => {
+            this.isLoading = false;
+            this.hasError = false;
+            this.nextStepRattachement(true, 'NONE', this.phoneNumber, payload.typeNumero);
 
-          this.followAttachmentIssues(payload, 'event');
-        },
-        async (err: any) => {
-          this.isLoading = false;
-          this.hasError = true;
-          this.followAttachmentIssues(payload, 'error');
-          if (err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists')) {
-            this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne ";
-          } else {
-            let nextStep = 'FORWARD';
-            let otpSent: boolean;
-            if (payload.typeNumero === 'MOBILE') {
-              const isCorporate = await this.checkIfMsisdnIsCoorporate(payload.numero);
-              console.log('isCorporate', isCorporate);
-
-              if (isCorporate) {
-                //send OTP MSG
-                this.isLoading = true;
-                otpSent = await this.otpService
-                  .generateOTPCode(payload.numero)
-                  .pipe(
-                    map(_ => {
-                      return true;
-                    }),
-                    catchError(_ => {
-                      this.isLoading = false;
-                      return of(false);
-                    }),
-                    tap(_ => {
-                      this.isLoading = false;
-                    })
-                  )
-                  .toPromise();
-                nextStep = 'SENT_OTP';
+            this.followAttachmentIssues(payload, 'event');
+          },
+          async (err: any) => {
+            this.isLoading = false;
+            this.hasError = true;
+            this.followAttachmentIssues(payload, 'error');
+            if (err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists' || err?.error?.errorKey === 'notMyNumber')) {
+              this.nextStep = 'FORWARD';
+              if (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists') {
+                const confirmModal = await this.openConfirmationModal(payload.numero);
+                confirmModal.present();
+                const { data } = await confirmModal.onDidDismiss();
+                if (!data?.continue) {
+                  return;
+                }
               }
-            }
-            if (nextStep && !otpSent) {
+              this.onContinue(payload);
+            } else {
               this.hasError = true;
-              this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
-            }
-            if (nextStep === 'FORWARD' || (nextStep === 'SENT_OTP' && otpSent)) {
-              this.nextStepRattachement(false, nextStep, this.phoneNumber, payload.typeNumero);
+              this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne en ce moment. Veuillez réessayer plus tard";
             }
           }
-        }
-      );
+        );
+    }
   }
 
   async checkIfMsisdnIsCoorporate(msisdn: string) {
@@ -181,5 +173,64 @@ export class RattachNumberModalComponent implements OnInit {
     this.modalCon.dismiss({
       direction: 'BACK',
     });
+  }
+
+  async generateOTP(numero: string) {
+    this.isLoading = true;
+    return this.otpService
+      .generateOTPCode(numero)
+      .pipe(
+        map(_ => {
+          return true;
+        }),
+        catchError(_ => {
+          this.isLoading = false;
+          return of(false);
+        }),
+        tap(_ => {
+          this.nextStep = 'SENT_OTP';
+          this.isLoading = false;
+        })
+      )
+      .toPromise();
+  }
+
+  async checkIfPresentInOEMNumbers(msisdn: string) {
+    if (msisdn.includes(this.dashbServ.getMainPhoneNumber())) {
+      return true;
+    }
+    const list: RattachementModel[] = await this.dashbServ.attachedNumbers().toPromise();
+    const found = list.filter(elt => {
+      return elt.msisdn.includes(msisdn);
+    });
+
+    return !!found.length;
+  }
+
+  async openConfirmationModal(msisdn: string) {
+    return await this.modalCon.create({
+      component: YesNoModalComponent,
+      componentProps: {
+        typeModal: OPERATION_CONFIRM_RATTACHMENT,
+        numero: msisdn,
+      },
+      cssClass: 'select-recipient-modal',
+    });
+  }
+
+  async onContinue(payload) {
+    if (payload.typeNumero === 'MOBILE') {
+      const isCorporate = await this.checkIfMsisdnIsCoorporate(payload.numero);
+      if (isCorporate) {
+        const otpSent = await this.generateOTP(payload?.numero);
+        if (!otpSent) {
+          this.hasError = true;
+          this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
+          return;
+        }
+      }
+      //this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
+    }
+    this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
   }
 }

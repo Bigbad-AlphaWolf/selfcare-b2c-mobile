@@ -52,7 +52,7 @@
             [ngClass]="{'selected': selectedFilter?.value === filter?.value}">{{filter.label}}</div>
         </div>
         <invoice-card *ngFor="let facture of filteredFactures" [numberToRegister]="payForOtherInput?.ligne"
-          [canPayBills]="canPayBills" [invoice]="facture" [counterToFav]="payForOtherInput?.counterToRattach"
+          [canPayBills]="canPayBills && payForOtherInput?.ligne" [invoice]="facture" [counterToFav]="payForOtherInput?.counterToRattach"
           [allBills]="factures" [operation]="operationType" [fees]="fees"></invoice-card>
       </ng-container>
       <ng-container *ngIf="!filteredFactures?.length">

@@ -191,15 +191,16 @@ export class SelectNumberForBillComponent implements OnInit {
     modal.onDidDismiss().then((response) => {
       console.log(response);
       if (response?.data?.phone) {
-        // this.form.patchValue({ number: response.data?.phone });
-        this.modalController.dismiss();
-        this.router.navigate(['/bills'], {
-          state: {
-            inputPhone: response.data?.phone,
-            clientCode: response.data?.codeClient,
-            operationType: this.operation
-          },
-        });
+        this.form.patchValue({ number: response.data?.phone });
+        this.checkNumero();
+        // this.modalController.dismiss();
+        // this.router.navigate(['/bills'], {
+        //   state: {
+        //     inputPhone: response.data?.phone,
+        //     clientCode: response.data?.codeClient,
+        //     operationType: this.operation
+        //   },
+        // });
       }
     });
     return await modal.present();
