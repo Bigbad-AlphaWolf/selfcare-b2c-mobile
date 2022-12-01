@@ -13,7 +13,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 export class RequestCardComponent implements OnInit {
   @Input('request') request: RequestOem;
   @Input('fullDescription') fullDescription: boolean = false;
-  constructor(private chatDimelo: DimeloCordovaPlugin, private dashboardServ: DashboardService, private iab: InAppBrowser) {}
+  constructor(private chatDimelo: DimeloCordovaPlugin, private dashboardServ: DashboardService) {}
 
   ngOnInit() {}
 
