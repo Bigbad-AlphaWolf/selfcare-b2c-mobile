@@ -5,18 +5,10 @@
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title>
-      Achat pass voyage
-    </ion-title>
+    <ion-title> Achat pass voyage </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content
-  no-bounce
-  has-bouncing="false"
-  forceOverscroll="false"
-  fullscreen="true"
-  [scrollEvents]="true"
->
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="list-pass-body">
     <div class="header-image">
       <img src="/assets/images/achat-de-pass-voyage@2x.png" />
@@ -25,52 +17,28 @@
       <ion-list mode="ios">
         <ion-item mode="ios" lines="none">
           <ion-label mode="ios">Je voyage vers</ion-label>
-          <ion-select
-            [value]="countries[0]"
-            interface="popover"
-            noIonSelectArrow
-            mode="ios"
-            (ionChange)="onCountryChanged($event)"
-          >
-            <ion-select-option
-              [value]="country"
-              *ngFor="let country of countries"
-              mode="ios"
-              ><span>{{country.name}}</span></ion-select-option
-            >
+          <ion-select [value]="countries[0]" interface="popover" noIonSelectArrow mode="ios" (ionChange)="onCountryChanged($event)">
+            <ion-select-option [value]="country" *ngFor="let country of countries" mode="ios"><span>{{country.name}}</span></ion-select-option>
           </ion-select>
-          <ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
+          <ion-icon name="chevron-down-outline" mode="ios" slot="end"></ion-icon>
         </ion-item>
       </ion-list>
     </div>
     <div *ngIf="isLoading" class="spinner-wrapper">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
-    <div class="list-pass-body-main-content" *ngIf="passs$ | async as passs" >
+    <div class="list-pass-body-main-content" *ngIf="passs$ | async as passs">
       <div class="list-pass-body" *ngIf="!isLoading">
         <div class="tab-header">
-          <div
-            *ngFor="let item of tabHeaderItems; index as i"
-            (click)="changeCategory(i)"
-            class="tab-header-item"
-            [ngClass]="{  'selected' : i === activeTabIndex } "
-          >
+          <div *ngFor="let item of tabHeaderItems; index as i" (click)="changeCategory(i)" class="tab-header-item" [ngClass]="{  'selected' : i === activeTabIndex } ">
             <span class="scb-text-light-black"> {{ item }}</span>
           </div>
         </div>
-        <div class="main-content" >
-          <ion-slides
-            #sliders
-            (ionSlideDidChange)="slideChanged()"
-            [options]="slideOpts"
-          >
+        <div class="main-content">
+          <ion-slides #sliders (ionSlideDidChange)="slideChanged()" [options]="slideOpts">
             <ion-slide *ngFor="let pass of passs; index as i">
               <div class="filtered-list-pass">
-                <app-item-pass-illimix
-                  *ngFor="let pas of pass"
-                  [passIllimix]="pas"
-                  (selectPass)="choosePass($event)"
-                ></app-item-pass-illimix>
+                <app-item-pass-illimix *ngFor="let pas of pass" [passIllimix]="pas" (selectPass)="choosePass($event)"></app-item-pass-illimix>
               </div>
             </ion-slide>
           </ion-slides>
