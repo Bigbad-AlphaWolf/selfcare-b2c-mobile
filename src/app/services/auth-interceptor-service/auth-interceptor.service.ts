@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
 import { tap, delay, retryWhen, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -14,10 +8,7 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import {
-  checkUrlMatchOM,
-  checkUrlNotNeedAuthorization,
-} from 'src/app/utils/utils';
+import { checkUrlMatchOM, checkUrlNotNeedAuthorization } from 'src/app/utils/utils';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
@@ -30,12 +21,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
   appVersionNumber: string;
-  constructor(
-    private authServ: AuthenticationService,
-    private router: Router,
-    private appVersion: AppVersion,
-    private modalController: ModalController
-  ) {
+  constructor(private authServ: AuthenticationService, private router: Router, private appVersion: AppVersion, private modalController: ModalController) {
     this.appVersion
       .getVersionNumber()
       .then(value => {
@@ -118,9 +104,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       return next.handle(req);
     }
     if (lightToken) {
-      let headers = req.headers
-        .set('X-Selfcare-UUID', x_uuid)
-        .set('Authorization', `Bearer ${lightToken}`);
+      let headers = req.headers.set('X-Selfcare-UUID', x_uuid).set('Authorization', `Bearer ${lightToken}`);
       req = req.clone({
         headers,
       });
@@ -137,6 +121,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-Selfcare-Source', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
       headers = headers.set('Access-Control-Allow-Origin', '*');
+      headers = headers.set('Content-Type', 'application/json; charset=UTF-8');
       req = req.clone({
         headers,
       });
@@ -152,13 +137,9 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-Selfcare-Os-Version', deviceInfo.version);
       headers = headers.set('X-Selfcare-Manufacturer', deviceInfo.manufacturer);
       headers = headers.set('X-Selfcare-Serial', deviceInfo.serial);
-      headers = headers.set(
-        'X-Selfcare-Isvirtual',
-        String(deviceInfo.isVirtual)
-      );
+      headers = headers.set('X-Selfcare-Isvirtual', String(deviceInfo.isVirtual));
 
-      if (this.appVersionNumber)
-        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if (this.appVersionNumber) headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
       req = req.clone({
         headers,
@@ -178,12 +159,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       retryWhen(err => {
         return err.pipe(
           switchMap(async err => {
-            if (
-              err.status === 401 &&
-              checkUrlMatchOM(err.url) &&
-              !err.statusText
-            )
-              return await this.resetOmToken(err);
+            if (err.status === 401 && checkUrlMatchOM(err.url) && !err.statusText) return await this.resetOmToken(err);
             throw err;
           })
         );
@@ -217,33 +193,19 @@ export class AuthInterceptorService implements HttpInterceptor {
 }
 
 function isReqWaitinForUID(url: string) {
-  const urlGetMsisdn =
-    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn';
-  const urlConfirmMsisdn =
-    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn';
+  const urlGetMsisdn = 'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn';
+  const urlConfirmMsisdn = 'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn';
   return url.match(urlGetMsisdn) || url.match(urlConfirmMsisdn);
 }
 
 function isReqWaitinForXUID(url: string) {
-  const urlCheckNumber =
-    'selfcare-b2c-account-management/api/account-management/v2/check_number';
-  const urlRegister =
-    'selfcare-b2c-account-management/api/account-management/v2/register';
-  const urlCheckNumberv3 =
-    'selfcare-b2c-account-management/api/account-management/v3/check_number';
-  const urlRegisterv3 =
-    'selfcare-b2c-account-management/api/account-management/v3/register';
+  const urlCheckNumber = 'selfcare-b2c-account-management/api/account-management/v2/check_number';
+  const urlRegister = 'selfcare-b2c-account-management/api/account-management/v2/register';
+  const urlCheckNumberv3 = 'selfcare-b2c-account-management/api/account-management/v3/check_number';
+  const urlRegisterv3 = 'selfcare-b2c-account-management/api/account-management/v3/register';
   const urlResetPwd = 'selfcare-b2c-uaa/api/account/b2c/reset-password';
-  const urlResetPwdV2 =
-    'selfcare-b2c-uaa/api/v2/lite/account/b2c/reset-password';
-  return (
-    url.match(urlCheckNumber) ||
-    url.match(urlRegister) ||
-    url.match(urlResetPwd) ||
-    url.match(urlCheckNumberv3) ||
-    url.match(urlRegisterv3) ||
-    url.match(urlResetPwdV2)
-  );
+  const urlResetPwdV2 = 'selfcare-b2c-uaa/api/v2/lite/account/b2c/reset-password';
+  return url.match(urlCheckNumber) || url.match(urlRegister) || url.match(urlResetPwd) || url.match(urlCheckNumberv3) || url.match(urlRegisterv3) || url.match(urlResetPwdV2);
 }
 
 function isReqWaitinForUIDandMSISDN(url: string) {
