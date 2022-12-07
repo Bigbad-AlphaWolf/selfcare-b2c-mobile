@@ -133,6 +133,7 @@
     "cordova-plugin-androidx-adapter": "^1.1.3",
     "cordova-plugin-contacts": "file:cordova-plugin-contacts",
     "cordova-plugin-contacts-phonenumbers": "0.0.12",
+    "cordova-plugin-eyeson": "file:cordova-plugin-eyeson",
     "cordova-plugin-fingerprint-aio": "^5.0.1",
     "cordova-plugin-firebase-analytics": "file:cordova-plugin-firebase-analytics-6.1.0",
     "cordova-plugin-firebase-dynamiclinks": "^6.1.0",
@@ -214,24 +215,7 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-custom-config": {},
-      "cordova-plugin-hms-analytics": {
-        "AGC_ROUTE_POLICY": "default",
-        "IS_ANALYTICS_ENABLED": "true"
-      },
-      "cordova-plugin-hms-push": {},
-      "cordova-plugin-x-socialsharing": {},
-      "cordova-plugin-network-information": {},
-      "cordova-plugin-firebase-dynamiclinks": {
-        "IOS_FIREBASE_POD_VERSION": "~> 8.8.0",
-        "ANDROID_FIREBASE_DYNAMICLINKS_VERSION": "21.0.+",
-        "APP_DOMAIN_NAME": "myorangesn.page.link",
-        "APP_DOMAIN_PATH": "/"
-      },
-      "cordova-plugin-firebase-analytics": {
-        "ANALYTICS_COLLECTION_ENABLED": "true",
-        "AUTOMATIC_SCREEN_REPORTING_ENABLED": "true",
-        "IOS_FIREBASE_POD_VERSION": "~> 8.8.0"
-      }
+      "cordova-plugin-eyeson": {}
     },
     "platforms": [
       "android",

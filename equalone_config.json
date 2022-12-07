@@ -1,0 +1,8 @@
+{
+  "baseUrl": "https://visionclient.orange.sn",
+  "folder": "orangeetmoi",
+  "anonymous": false,
+  "dataCollect": true,
+  "batteryProtection": false,
+  "foregroundNotification": true
+}

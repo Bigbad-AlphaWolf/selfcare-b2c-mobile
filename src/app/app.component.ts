@@ -31,6 +31,7 @@ import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
 import { DashboardService } from './services/dashboard-service/dashboard.service';
+import { EyesonSdkService } from './services/eyeson-service/eyeson-sdk.service';
 
 const { SERVER_API_URL } = environment;
 
@@ -74,7 +75,8 @@ export class AppComponent {
     private bpSargalService: BonsPlansSargalService,
     private notificationService: NotificationService,
     private ngZone: NgZone,
-    private dashbService: DashboardService
+    private dashbService: DashboardService,
+    private sdkEyesOn: EyesonSdkService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -152,8 +154,8 @@ export class AppComponent {
   }
 
   listenNotifications() {
-    document.addEventListener("batchPushReceived", (notification) => {
-      this.notificationService.handleNotification(notification)
+    document.addEventListener('batchPushReceived', notification => {
+      this.notificationService.handleNotification(notification);
     });
   }
 
@@ -248,8 +250,8 @@ export class AppComponent {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
       }
-      return;
     }
+    this.initAndStartEyesOnPlugin(this.platform.is('android'));
     const imei = this.uid.IMEI;
     AppComponent.IMEI = imei;
     return imei;
@@ -310,5 +312,23 @@ export class AppComponent {
       message: 'Veuillez-vous connecter pour avoir vos données à jour et effectuer des transactions.',
       position: 'top',
     });
+  }
+
+  async initAndStartEyesOnPlugin(isAndroid: boolean) {
+    if (isAndroid) {
+      console.log('called initAgentResponse');
+      const initAgentResponse = await this.sdkEyesOn.initAgent();
+      console.log('Init', initAgentResponse);
+      //const startAgentResponse = await this.sdkEyesOn.startAgent();
+      //console.log('Start', startAgentResponse);
+      setTimeout(async () => {
+        const dqIDAgentResponse = await this.sdkEyesOn.getEyesOnDqaIdInfos();
+        console.log('dqIDAgentResponse', dqIDAgentResponse);
+        const updatePermAgentResponse = await this.sdkEyesOn.onUpdatePermissions();
+        console.log('onUpdatePermission', updatePermAgentResponse);
+        const configurationResponse = await this.sdkEyesOn.getEyesOnDqaIdInfos();
+        console.log('configuration', configurationResponse);
+      }, 3000);
+    }
   }
 }

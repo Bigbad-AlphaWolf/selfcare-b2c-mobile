@@ -41,6 +41,7 @@ import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
+import { EyesOn } from 'cordova-plugin-eyeson/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -61,6 +62,7 @@ registerLocaleData(localeFr);
     PipesModule,
   ],
   providers: [
+    EyesOn,
     AppVersion,
     StatusBar,
     SplashScreen,

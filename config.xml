@@ -44,6 +44,7 @@
         <resource-file src="google-services.json" target="app/google-services.json" />
         <custom-preference name="android-manifest/application/activity/@android:exported" value="true" />
         <custom-preference delete="true" name="android-manifest/uses-feature[@android:name='android.hardware.camera']" />
+        <resource-file src="equalone_config.json" target="app/src/main/res/raw/equalone_config.json" />
         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
