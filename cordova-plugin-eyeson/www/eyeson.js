@@ -39,10 +39,27 @@ var eyeson = {
 	startAgent: function(cb) {
 		exec(cb, null, PLUGIN_NAME, 'startAgent', []);
 	},
+	
+	updateConfiguration: function(cb) {
+		exec(cb, null, PLUGIN_NAME, 'updateConfiguration', []);
+	},
 		
 	getDqaId: function(cb) {
 		exec(cb, null, PLUGIN_NAME, 'getDqaId', []);
 	},
+	
+	getDqaStatus: function(cb) {
+		exec(cb, null, PLUGIN_NAME, 'getDqaStatus', []);
+	},
+	
+	getDataCollectStatus: function(cb) {
+		exec(cb, null, PLUGIN_NAME, 'getDataCollectStatus', []);
+	},
+	
+	onPermissionChanged: function(cb) {
+		exec(cb, null, PLUGIN_NAME, 'onPermissionChanged', []);
+	},
+	
         
 }
 

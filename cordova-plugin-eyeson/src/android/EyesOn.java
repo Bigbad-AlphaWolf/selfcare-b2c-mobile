@@ -34,6 +34,7 @@ import com.v3d.equalcore.external.bootstrap.EQualOneApiClient;
 import com.v3d.equalcore.external.exception.EQError;
 import com.v3d.equalcore.external.manager.EQAgentInformationManager;
 import com.v3d.equalcore.external.manager.EQManagerInterface;
+import com.v3d.equalcore.external.manager.EQPermissionsManager;
 import com.v3d.equalcore.external.manager.agentinformation.EQConfigurationListener;
 
 import android.content.Context;
@@ -51,6 +52,7 @@ public class EyesOn extends CordovaPlugin implements EQConnectionCallbacks {
     private Context context;
     //EQUAL ONE MANAGERS
     private EQAgentInformationManager mAgentInformationManager;
+    private EQPermissionsManager mPermissionsManager;
 
     private EQualOneApiClient mCoreClient;
     private boolean mIsConnected;
@@ -96,15 +98,67 @@ public class EyesOn extends CordovaPlugin implements EQConnectionCallbacks {
                 mCoreClient.enable(true);
                 callbackContext.success();
             }
+            else {
+                callbackContext.error("Core client not connected yet.");
+            }
 
-		} else if ("getDqaId".equals(action)) {
-            Log.i(INFO, "DQA ID::" + mAgentInformationManager.getDqaId());
-						JSONObject infos = new JSONObject();
-						try {
-            infos.put("dqaid", mAgentInformationManager.getDqaId());
-            // authInfo.put("Dimelo", "Rocks!");
-        } catch (JSONException e) {}
-            callbackContext.success(infos);
+		} else if ("updateConfiguration".equals(action)) {
+            if(mIsConnected) {
+
+                Log.i(INFO, "Updating configuration");
+                mAgentInformationManager.updateConfiguration(new EQConfigurationListener() {
+                    @Override
+                    public void onUpdated(long timestamp) {
+                        Log.i(INFO, "onUpdated::" + timestamp);
+                        callbackContext.success((int) timestamp);
+                    }
+
+                    @Override
+                    public void onUptodate() {
+                        Log.i(INFO, "onUptodate");
+                        callbackContext.success();
+                    }
+
+                    @Override
+                    public void onError(EQError eqError) {
+                        Log.e(ERROR, "onError::" + eqError.getErrorCode() + "::" + eqError.getErrorMessage());
+                        callbackContext.error(eqError.getErrorMessage());
+                    }
+                });
+            }
+            else {
+                callbackContext.error("Core client not connected yet.");
+            }
+
+        } else if ("getDqaId".equals(action)) {
+            if (mIsConnected) {
+                Log.i(INFO, "DQA ID::" + mAgentInformationManager.getDqaId());
+                callbackContext.success(mAgentInformationManager.getDqaId());
+            } else {
+                callbackContext.error("Core client not connected yet.");
+            }
+
+        }  else if ("getDqaStatus".equals(action)) {
+            Log.i(INFO, "DQA Status::" + mCoreClient.getStatus());
+            callbackContext.success(mCoreClient.getStatus());
+
+        }  else if ("getDataCollectStatus".equals(action)) {
+            Log.i(INFO, "Data Collect Status::" + mCoreClient.isEnable());
+            if(mCoreClient.isEnable()) {
+                callbackContext.success("true");
+            } else {
+                callbackContext.success("false");
+            }
+
+        } else if ("onPermissionChanged".equals(action)) {
+            if (mIsConnected) {
+                Log.i(INFO, "onPermissionChanged");
+                mPermissionsManager.onPermissionsChanged();
+                callbackContext.success();
+            } else {
+                callbackContext.error("Core client not connected yet.");
+            }
+
         }
 
 		else {
@@ -122,8 +176,7 @@ public class EyesOn extends CordovaPlugin implements EQConnectionCallbacks {
     public void onConnected() {
         Log.i(INFO, this.getClass().getSimpleName() + "::onConnected");
         mIsConnected = true;
-				Log.i(INFO, "startAgent");
-				mCoreClient.enable(true);
+				//mCoreClient.enable(true);
         initialiseManagers();
     }
 
@@ -144,7 +197,7 @@ public class EyesOn extends CordovaPlugin implements EQConnectionCallbacks {
     //********************************************
     public void initialiseManagers() {
         mAgentInformationManager = (EQAgentInformationManager) mCoreClient.getManager(EQManagerInterface.AGENT_INFORMATION);
+        mPermissionsManager = (EQPermissionsManager) mCoreClient.getManager(EQManagerInterface.PERMISSION);
     }
-
 
 }

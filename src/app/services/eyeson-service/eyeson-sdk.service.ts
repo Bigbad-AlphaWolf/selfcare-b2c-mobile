@@ -2,21 +2,28 @@ import { Injectable } from '@angular/core';
 import { EyesOn } from 'cordova-plugin-eyeson/ngx';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EyesonSdkService {
+  constructor(private eyeson: EyesOn) {}
 
-  constructor(private eyeson: EyesOn) { }
+  initAgent() {
+    return this.eyeson.initAgent();
+  }
 
-	initAgent(){
-		return this.eyeson.initAgent();
-	}
+  startAgent() {
+    return this.eyeson.startAgent();
+  }
 
-	startAgent(){
-		return this.eyeson.startAgent();
-	}
+  getEyesOnDqaIdInfos() {
+    return this.eyeson.getDqaId();
+  }
 
-	getEyesOnDqaIdInfos(){
-		return this.eyeson.getDqaId();
-	}
+  onUpdatePermissions() {
+    return this.eyeson.onPermissionChanged();
+  }
+
+  getConfiguration() {
+    return this.eyeson.getDataCollectStatus();
+  }
 }

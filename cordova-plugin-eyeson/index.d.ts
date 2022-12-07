@@ -30,6 +30,10 @@ export declare class EyesOnOriginal extends AwesomeCordovaNativePlugin {
     initAgent(): Promise<any>;
     startAgent(): Promise<any>;
     getDqaId(): Promise<any>;
+    updateConfiguration(): Promise<any>;
+    getDqaStatus(): Promise<any>;
+    getDataCollectStatus(): Promise<any>;
+    onPermissionChanged(): Promise<any>;
 }
 
 export declare const EyesOn: EyesOnOriginal;

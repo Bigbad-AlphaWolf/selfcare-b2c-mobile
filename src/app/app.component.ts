@@ -1,44 +1,44 @@
-import {SplashScreen} from '@ionic-native/splash-screen/ngx';
-import {Component} from '@angular/core';
-import {LoadingController, ModalController, NavController, Platform} from '@ionic/angular';
-import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
-import {Router} from '@angular/router';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { Component } from '@angular/core';
+import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
-import {DetailsConsoPage} from './details-conso/details-conso.page';
-import {v4 as uuidv4} from 'uuid';
-import {TransfertHubServicesPage} from './transfert-hub-services/transfert-hub-services.page';
-import {ApplicationRoutingService} from './services/application-routing/application-routing.service';
-import {checkUrlMatch} from './utils/utils';
-import {ImageLoaderConfigService} from 'ionic-image-loader';
-import {HttpHeaders} from '@angular/common/http';
-import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
-import {Uid} from '@ionic-native/uid/ngx';
-import {DashboardPage} from './dashboard/dashboard.page';
-import {AppVersion} from '@ionic-native/app-version/ngx';
-import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
-import {ParrainagePage} from './parrainage/parrainage.page';
-import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
-import {Diagnostic} from '@ionic-native/diagnostic/ngx';
-import {ContactsService} from './services/contacts-service/contacts.service';
-import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
-import {catchError, switchMap, tap} from 'rxjs/operators';
-import {AuthenticationService} from './services/authentication-service/authentication.service';
-import {OtpService} from './services/otp-service/otp.service';
-import {from, throwError} from 'rxjs';
-import {NewRegistrationPage} from './new-registration/new-registration.page';
-import {LocalStorageService} from './services/localStorage-service/local-storage.service';
-import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
-import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
+import { DetailsConsoPage } from './details-conso/details-conso.page';
+import { v4 as uuidv4 } from 'uuid';
+import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
+import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
+import { checkUrlMatch } from './utils/utils';
+import { ImageLoaderConfigService } from 'ionic-image-loader';
+import { HttpHeaders } from '@angular/common/http';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { Uid } from '@ionic-native/uid/ngx';
+import { DashboardPage } from './dashboard/dashboard.page';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AssistanceHubPage } from './assistance-hub/assistance-hub.page';
+import { ParrainagePage } from './parrainage/parrainage.page';
+import { MyOfferPlansPage } from './pages/my-offer-plans/my-offer-plans.page';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { ContactsService } from './services/contacts-service/contacts.service';
+import { OrangeMoneyService } from './services/orange-money-service/orange-money.service';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { AuthenticationService } from './services/authentication-service/authentication.service';
+import { OtpService } from './services/otp-service/otp.service';
+import { from, throwError } from 'rxjs';
+import { NewRegistrationPage } from './new-registration/new-registration.page';
+import { LocalStorageService } from './services/localStorage-service/local-storage.service';
+import { LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP } from 'src/shared';
+import { BottomSheetService } from './services/bottom-sheet/bottom-sheet.service';
 import { EyesonSdkService } from './services/eyeson-service/eyeson-sdk.service';
 
-const ls = new SecureLS({encodingType: 'aes'});
+const ls = new SecureLS({ encodingType: 'aes' });
 
 declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   appVersionNumber: any;
@@ -66,7 +66,7 @@ export class AppComponent {
     private otpService: OtpService,
     private localStorage: LocalStorageService,
     private bottomSheetServ: BottomSheetService,
-		private sdkEyesOn: EyesonSdkService
+    private sdkEyesOn: EyesonSdkService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -81,10 +81,7 @@ export class AppComponent {
   loadContacts() {
     this.diagnostic.getContactsAuthorizationStatus().then(
       contactStatus => {
-        if (
-          contactStatus === this.diagnostic.permissionStatus.GRANTED ||
-          contactStatus === this.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE
-        ) {
+        if (contactStatus === this.diagnostic.permissionStatus.GRANTED || contactStatus === this.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE) {
           this.contactService.getAllContacts().subscribe();
         }
       },
@@ -153,7 +150,7 @@ export class AppComponent {
         '/bonplan': MyOfferPlansPage,
         '/access/:hmac': NewRegistrationPage,
         '/changement-formule/:codeFormule': TransfertHubServicesPage,
-        '/changement-formule': TransfertHubServicesPage
+        '/changement-formule': TransfertHubServicesPage,
       })
       .subscribe(
         matched => {
@@ -191,9 +188,9 @@ export class AppComponent {
       const loader = await this.presentLoadingWithOptions();
       loader.present();
       this.otpService
-        .checkOTPSMS({hmac: hmac_hashe})
+        .checkOTPSMS({ hmac: hmac_hashe })
         .pipe(
-          tap((res: {hmac: string; check: boolean}) => {
+          tap((res: { hmac: string; check: boolean }) => {
             loader.dismiss();
             this.bottomSheetServ.enterUserPhoneNumber(optAccessUserNumber, STEPS_ACCESS_BY_OTP.PROCESS_OTP, !res.check);
           }),
@@ -210,7 +207,7 @@ export class AppComponent {
 
   async getImei() {
     console.log(this.uid);
-    const {hasPermission} = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
+    const { hasPermission } = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
     if (!hasPermission) {
       console.log('hasPermission', hasPermission);
 
@@ -220,7 +217,7 @@ export class AppComponent {
         throw new Error('Permissions required');
       }
     }
-		this.initAndStartEyesOnPlugin(this.platform.is('android'))
+    this.initAndStartEyesOnPlugin(this.platform.is('android'));
     const imei = this.uid.IMEI;
     AppComponent.IMEI = imei;
     return imei;
@@ -240,17 +237,26 @@ export class AppComponent {
       message: 'Veuillez patienter',
       translucent: true,
       cssClass: 'custom-class custom-loading',
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     return loading;
   }
 
-	initAndStartEyesOnPlugin(isAndroid: boolean) {
-		if(isAndroid) {
-			console.log('called');
-			this.sdkEyesOn.initAgent().then((res) => {}).catch((err) => {
-				console.log('Init And Start err', err);
-			})
-		}
-	}
+  async initAndStartEyesOnPlugin(isAndroid: boolean) {
+    if (isAndroid) {
+      console.log('called initAgentResponse');
+      const initAgentResponse = await this.sdkEyesOn.initAgent();
+      console.log('Init', initAgentResponse);
+      //const startAgentResponse = await this.sdkEyesOn.startAgent();
+      //console.log('Start', startAgentResponse);
+      setTimeout(async () => {
+        const dqIDAgentResponse = await this.sdkEyesOn.getEyesOnDqaIdInfos();
+        console.log('dqIDAgentResponse', dqIDAgentResponse);
+        const updatePermAgentResponse = await this.sdkEyesOn.onUpdatePermissions();
+        console.log('onUpdatePermission', updatePermAgentResponse);
+        const configurationResponse = await this.sdkEyesOn.getEyesOnDqaIdInfos();
+        console.log('configuration', configurationResponse);
+      }, 3000);
+    }
+  }
 }
