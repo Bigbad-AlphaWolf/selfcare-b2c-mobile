@@ -1,13 +1,9 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { environment } from 'src/environments/environment.prod';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
-import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
-import { InfosAbonneModel } from 'src/app/models/infos-abonne.model';
 import { ANALYTICS_PROVIDER, OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { AssistanceService } from 'src/app/services/assistance.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { DIMELO_CHAT_MARKUP } = environment;
 @Component({
@@ -20,7 +16,7 @@ export class IbouIonFabComponent implements OnInit {
   DIMELO_CHAT_MARKUP = DIMELO_CHAT_MARKUP;
   @Output() goTabAssistance: EventEmitter<any> = new EventEmitter();
 
-  constructor(private oemLoggingService: OemLoggingService, private el: ElementRef, private dashboardServ: DashboardService, private sdkDimelo: DimeloCordovaPlugin) {}
+  constructor(private oemLoggingService: OemLoggingService, private el: ElementRef, private dashboardServ: DashboardService, private assistanceService: AssistanceService) {}
 
   ngOnInit() {}
 
@@ -33,20 +29,7 @@ export class IbouIonFabComponent implements OnInit {
   }
 
   openDimeloChat() {
-    const user: InfosAbonneModel = ls.get('userInfos');
-    const username = `${user?.givenName} ${user?.familyName}`;
-    const msisdn = this.dashboardServ.getMainPhoneNumber();
-    //console.log('username', username);
-    //console.log('msisdn', msisdn);
-
-    this.sdkDimelo.openChat(username, msisdn).then(
-      () => {
-        console.log('chat open');
-      },
-      err => {
-        console.log('chat not open', err);
-      }
-    );
+    this.assistanceService.openIbouDimeloChat();
   }
 
   hideChatBlock() {
