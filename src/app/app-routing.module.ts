@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { FORGOT_PWD_PAGE_URL } from 'src/shared';
+import { CHAT_IBOU_PATH } from './dashboard/dashboard.page';
 import { AuthGuard } from './services/auth-guard/auth.guard';
 import { AuthUpdateGuard } from './services/auth-update-guard/auth-update.guard';
 
@@ -33,6 +34,11 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
+    loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardPageModule),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: CHAT_IBOU_PATH,
     loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardPageModule),
     canActivate: [AuthGuard],
   },
