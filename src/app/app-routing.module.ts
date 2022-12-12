@@ -441,6 +441,10 @@ const routes: Routes = [
     path: 'custom-sargal-profile',
     loadChildren: () => import('./custom-sargal-profile/custom-sargal-profile.module').then(m => m.CustomSargalProfilePageModule),
   },
+  {
+    path: 'create-request-or-trouble-ticket',
+    loadChildren: () => import('./pages/create-request-or-trouble-ticket/create-request-or-trouble-ticket.module').then( m => m.CreateRequestOrTroubleTicketPageModule)
+  },
 ];
 
 @NgModule({

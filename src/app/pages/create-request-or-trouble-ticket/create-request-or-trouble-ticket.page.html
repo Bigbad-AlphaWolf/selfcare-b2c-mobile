@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [id]="'goBackBtn' | generateIdForTA" defaultHref="/" mode="md" class="ion-padding-start" class="oem-back-button">
+        <img src="assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="title1">{{pageTitle}}</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="deplafonnement-content">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">{{pageTitle}}</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="deplafonnement-body">
+    <div class="banniere-container">
+      <img src="/assets/images/banniere-om-new-account.png" alt="header-om" />
+    </div>
+    <div class="all-informations-block">
+      <form class="form-block" [formGroup]="requestForm">
+        <div class="single-block">
+          <div class="block-title">Informations</div>
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Numero de contact &nbsp;&nbsp;*</mat-label>
+            <input formControlName="msisdn" matInput type="tel" />
+            <small class="text-danger" *ngIf="requestForm?.get('msisdn')?.hasError('invalid')"> Veuillez renseigner un numéro valide</small>
+          </mat-form-field>
+          <ion-list mode="ios">
+            <ion-item mode="ios" lines="none">
+              <ion-label mode="ios" class="scb-text-gray">Numéro Fixe *</ion-label>
+              <ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="num_fix">
+                <ion-select-option *ngFor="let number of listFixNumbers" [value]="number"><span>{{number}}</span></ion-select-option>
+              </ion-select>
+              <ion-icon name="chevron-down-outline" mode="ios" slot="end"></ion-icon>
+            </ion-item>
+          </ion-list>
+          <ion-list mode="ios">
+            <ion-item mode="ios" lines="none">
+              <ion-label mode="ios" class="scb-text-gray">Type *</ion-label>
+              <ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="type">
+                <ion-select-option value="DERANGEMENT"><span>Dérangement</span></ion-select-option>
+                <ion-select-option value="RECLAMATION"><span>Réclamation</span></ion-select-option>
+              </ion-select>
+              <ion-icon name="chevron-down-outline" mode="ios" slot="end"></ion-icon>
+            </ion-item>
+          </ion-list>
+          <ion-list mode="ios">
+            <ion-item mode="ios" lines="none">
+              <ion-label mode="ios" class="scb-text-gray">Motif *</ion-label>
+              <ion-select
+                id="auto-trigger"
+                [interfaceOptions]="{size: 'auto', cssClass: 'popover-wide'}"
+                interface="popover"
+                placeholder="Choisir motif"
+                noIonSelectArrow
+                mode="ios"
+                formControlName="motif"
+              >
+                <ion-select-option *ngFor="let motifValue of listMotifs" [value]="motifValue" mode="ios"><span>{{motifValue}}</span></ion-select-option>
+              </ion-select>
+              <ion-icon name="chevron-down-outline" mode="ios" slot="end"></ion-icon>
+            </ion-item>
+          </ion-list>
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Email &nbsp;&nbsp;</mat-label>
+            <input formControlName="email" matInput type="email" />
+            <small class="text-danger" *ngIf="requestForm?.get('email')?.invalid"> Veuillez renseigner un email valide sinon effacer tout le contenu du champ </small>
+          </mat-form-field>
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Message &nbsp;&nbsp; *</mat-label>
+            <textarea formControlName="message" matInput [cols]="8" [rows]="8"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="single-block">
+          <div class="form-block">
+            <div class="init-otp-error" *ngIf="hasError">Une erreur nous empêche de répondre à votre requête. Veuillez réessayer ultérieurement</div>
+            <button [disabled]="requestForm?.invalid" class="scb-btn scb-btn-full scb-btn-orange" (click)="processForm()">
+              <span>Continuer</span>
+              <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isProcessing"></mat-spinner>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>
