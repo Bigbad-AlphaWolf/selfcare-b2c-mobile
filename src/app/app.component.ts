@@ -317,9 +317,15 @@ export class AppComponent {
   async initAndStartEyesOnPlugin(isAndroid: boolean) {
     if (isAndroid) {
       console.log('called EyesOn');
-      await this.sdkEyesOn.initAgent();
-      await this.sdkEyesOn.startAgent();
-      await this.sdkEyesOn.onUpdatePermissions();
+      this.sdkEyesOn.initAgent().then(res => {
+        console.log('init', res);
+        this.sdkEyesOn.startAgent().then(res => {
+          console.log('start', res);
+          this.sdkEyesOn.onUpdatePermissions().then(res => {
+            console.log('onUpdatePermissions', res);
+          });
+        });
+      });
     }
   }
 }
