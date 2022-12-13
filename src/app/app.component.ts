@@ -316,19 +316,10 @@ export class AppComponent {
 
   async initAndStartEyesOnPlugin(isAndroid: boolean) {
     if (isAndroid) {
-      console.log('called initAgentResponse');
-      const initAgentResponse = await this.sdkEyesOn.initAgent();
-      console.log('Init', initAgentResponse);
-      //const startAgentResponse = await this.sdkEyesOn.startAgent();
-      //console.log('Start', startAgentResponse);
-      setTimeout(async () => {
-        const dqIDAgentResponse = await this.sdkEyesOn.getEyesOnDqaIdInfos();
-        console.log('dqIDAgentResponse', dqIDAgentResponse);
-        const updatePermAgentResponse = await this.sdkEyesOn.onUpdatePermissions();
-        console.log('onUpdatePermission', updatePermAgentResponse);
-        const configurationResponse = await this.sdkEyesOn.getEyesOnDqaIdInfos();
-        console.log('configuration', configurationResponse);
-      }, 3000);
+      console.log('called EyesOn');
+      await this.sdkEyesOn.initAgent();
+      await this.sdkEyesOn.startAgent();
+      await this.sdkEyesOn.onUpdatePermissions();
     }
   }
 }

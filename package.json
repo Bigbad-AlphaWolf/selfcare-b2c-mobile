@@ -215,7 +215,25 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-custom-config": {},
-      "cordova-plugin-eyeson": {}
+      "cordova-plugin-eyeson": {},
+      "cordova-plugin-hms-analytics": {
+        "AGC_ROUTE_POLICY": "default",
+        "IS_ANALYTICS_ENABLED": "true"
+      },
+      "cordova-plugin-hms-push": {},
+      "cordova-plugin-x-socialsharing": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-firebase-dynamiclinks": {
+        "IOS_FIREBASE_POD_VERSION": "~> 8.8.0",
+        "ANDROID_FIREBASE_DYNAMICLINKS_VERSION": "21.0.+",
+        "APP_DOMAIN_NAME": "myorangesn.page.link",
+        "APP_DOMAIN_PATH": "/"
+      },
+      "cordova-plugin-firebase-analytics": {
+        "ANALYTICS_COLLECTION_ENABLED": "true",
+        "AUTOMATIC_SCREEN_REPORTING_ENABLED": "true",
+        "IOS_FIREBASE_POD_VERSION": "~> 8.8.0"
+      }
     },
     "platforms": [
       "android",
