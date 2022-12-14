@@ -1,6 +1,6 @@
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Component, NgZone } from '@angular/core';
-import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
+import { Component, NgZone, ViewChild } from '@angular/core';
+import { IonRouterOutlet, LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
@@ -12,7 +12,6 @@ import { HttpHeaders } from '@angular/common/http';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { AssistanceHubPage } from './assistance-hub/assistance-hub.page';
 import { BatchAnalyticsService } from './services/batch-analytics/batch-analytics.service';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ContactsService } from './services/contacts-service/contacts.service';
@@ -31,6 +30,8 @@ import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
 import { DashboardService } from './services/dashboard-service/dashboard.service';
+import { Deeplinks } from '@awesome-cordova-plugins/deeplinks/ngx';
+import { LoginPage } from './login/login.page';
 
 const { SERVER_API_URL } = environment;
 
@@ -74,7 +75,8 @@ export class AppComponent {
     private bpSargalService: BonsPlansSargalService,
     private notificationService: NotificationService,
     private ngZone: NgZone,
-    private dashbService: DashboardService
+    private dashbService: DashboardService,
+    private deeplink: Deeplinks
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -152,8 +154,8 @@ export class AppComponent {
   }
 
   listenNotifications() {
-    document.addEventListener("batchPushReceived", (notification) => {
-      this.notificationService.handleNotification(notification)
+    document.addEventListener('batchPushReceived', notification => {
+      this.notificationService.handleNotification(notification);
     });
   }
 
@@ -186,9 +188,7 @@ export class AppComponent {
         const result: { deepLink: string; minimumAppVersion: number } = res;
         if (result?.deepLink) {
           const path = result?.deepLink.replace('https://myorangesn.page.link', '');
-          this.ngZone.run(() => {
-            this.goToPage(path);
-          });
+          this.goToPage(path);
           console.log('res onDynamicLink', path);
         }
         console.log(res);
@@ -198,17 +198,36 @@ export class AppComponent {
         console.log(error);
       }
     );
+    this.deeplink
+      .routeWithNavController(this.navContr, {
+        '/login': LoginPage,
+      })
+      .subscribe(
+        match => {
+          // match.$route - the route we matched, which is the matched entry from the arguments to route()
+          // match.$args - the args passed in the link
+          // match.$link - the full link data
+          console.log('Successfully matched route', match);
+          this.goToPage(match?.$link?.path);
+        },
+        nomatch => {
+          // nomatch.$link - the full link data
+          console.error("Got a deeplink that didn't match", nomatch);
+        }
+      );
   }
 
   goToPage(path: string, options?: any) {
-    if (checkUrlMatch(path)) {
-      console.log('path', path);
-      this.appRout.goToTransfertHubServicesPage('BUY');
-    } else {
-      this.router.navigate([path], {
-        state: options,
-      });
-    }
+    this.ngZone.run(() => {
+      if (checkUrlMatch(path)) {
+        console.log('path', path);
+        this.appRout.goToTransfertHubServicesPage('BUY');
+      } else {
+        this.router.navigate([path], {
+          state: options,
+        });
+      }
+    });
   }
 
   async processAccessByOtp(path: string) {

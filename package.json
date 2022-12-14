@@ -46,6 +46,7 @@
     "@angular/router": "^12.2.10",
     "@awesome-cordova-plugins/barcode-scanner": "^5.41.0",
     "@awesome-cordova-plugins/core": "^5.39.1",
+    "@awesome-cordova-plugins/deeplinks": "^6.2.0",
     "@awesome-cordova-plugins/diagnostic": "^5.36.0",
     "@awesome-cordova-plugins/fcm": "^5.41.0",
     "@awesome-cordova-plugins/firebase-dynamic-links": "^5.45.0",
@@ -145,6 +146,7 @@
     "cordova.plugin.dimelo": "file:DimeloPlugin",
     "cordova.plugins.diagnostic": "^6.1.1",
     "es6-promise-plugin": "^4.1.0",
+    "ionic-plugin-deeplinks": "^1.0.24",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "^6.3.17",
@@ -231,6 +233,11 @@
         "ANALYTICS_COLLECTION_ENABLED": "true",
         "AUTOMATIC_SCREEN_REPORTING_ENABLED": "true",
         "IOS_FIREBASE_POD_VERSION": "~> 8.8.0"
+      },
+      "ionic-plugin-deeplinks": {
+        "URL_SCHEME": "orangeetmoi",
+        "DEEPLINK_HOST": "myorangesn.page.link",
+        "ANDROID_PATH_PREFIX": "/"
       }
     },
     "platforms": [
