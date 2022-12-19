@@ -132,7 +132,6 @@
     "cordova-plugin-androidx-adapter": "^1.1.3",
     "cordova-plugin-contacts": "file:cordova-plugin-contacts",
     "cordova-plugin-contacts-phonenumbers": "0.0.12",
-    "cordova-plugin-eyeson": "file:cordova-plugin-eyeson",
     "cordova-plugin-fingerprint-aio": "^5.0.1",
     "cordova-plugin-firebase-analytics": "file:cordova-plugin-firebase-analytics-6.1.0",
     "cordova-plugin-firebase-dynamiclinks": "^6.1.0",
@@ -213,7 +212,6 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-custom-config": {},
-      "cordova-plugin-eyeson": {},
       "cordova-plugin-hms-analytics": {
         "AGC_ROUTE_POLICY": "default",
         "IS_ANALYTICS_ENABLED": "true"

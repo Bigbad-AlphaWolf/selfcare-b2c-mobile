@@ -251,7 +251,7 @@ export class AppComponent {
         throw new Error('Permissions required');
       }
     }
-    this.initAndStartEyesOnPlugin(this.platform.is('android'));
+    //this.initAndStartEyesOnPlugin(this.platform.is('android'));
     const imei = this.uid.IMEI;
     AppComponent.IMEI = imei;
     return imei;
@@ -314,18 +314,18 @@ export class AppComponent {
     });
   }
 
-  async initAndStartEyesOnPlugin(isAndroid: boolean) {
-    if (isAndroid) {
-      console.log('called EyesOn');
-      this.sdkEyesOn.initAgent().then(res => {
-        console.log('init', res);
-        this.sdkEyesOn.startAgent().then(res => {
-          console.log('start', res);
-          this.sdkEyesOn.onUpdatePermissions().then(res => {
-            console.log('onUpdatePermissions', res);
-          });
-        });
-      });
-    }
-  }
+  //async initAndStartEyesOnPlugin(isAndroid: boolean) {
+  //  if (isAndroid) {
+  //    console.log('called EyesOn');
+  //    this.sdkEyesOn.initAgent().then(res => {
+  //      console.log('init', res);
+  //      this.sdkEyesOn.startAgent().then(res => {
+  //        console.log('start', res);
+  //        this.sdkEyesOn.onUpdatePermissions().then(res => {
+  //          console.log('onUpdatePermissions', res);
+  //        });
+  //      });
+  //    });
+  //  }
+  //}
 }
