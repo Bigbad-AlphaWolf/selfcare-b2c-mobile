@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { FORGOT_PWD_PAGE_URL } from 'src/shared';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
@@ -53,9 +54,7 @@ export class HomePage implements OnInit {
     }
   }
 
-  ngOnInit() {
-    //  this.open();
-  }
+  ngOnInit() {}
 
   goToLoginPage() {
     this.oemLogging.registerEvent('home_login_click', []);

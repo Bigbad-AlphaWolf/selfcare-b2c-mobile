@@ -1,0 +1,25 @@
+{
+  "name": "cordova-plugin-eyeson",
+  "version": "0.1.0-dev",
+  "description": "Cordova Eyes'ON Plugin",
+  "cordova": {
+    "id": "cordova-plugin-eyeson",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "eyeson",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova-android",
+      "version": ">=6.3.0"
+    }
+  ],
+  "author": "CDE",
+  "license": "Apache 2.0"
+}

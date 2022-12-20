@@ -31,6 +31,7 @@ import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
 import { DashboardService } from './services/dashboard-service/dashboard.service';
+import { EyesonSdkService } from './services/eyeson-service/eyeson-sdk.service';
 
 const { SERVER_API_URL } = environment;
 
@@ -74,7 +75,8 @@ export class AppComponent {
     private bpSargalService: BonsPlansSargalService,
     private notificationService: NotificationService,
     private ngZone: NgZone,
-    private dashbService: DashboardService
+    private dashbService: DashboardService,
+    private sdkEyesOn: EyesonSdkService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -152,8 +154,8 @@ export class AppComponent {
   }
 
   listenNotifications() {
-    document.addEventListener("batchPushReceived", (notification) => {
-      this.notificationService.handleNotification(notification)
+    document.addEventListener('batchPushReceived', notification => {
+      this.notificationService.handleNotification(notification);
     });
   }
 
@@ -248,8 +250,8 @@ export class AppComponent {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
       }
-      return;
     }
+    //this.initAndStartEyesOnPlugin(this.platform.is('android'));
     const imei = this.uid.IMEI;
     AppComponent.IMEI = imei;
     return imei;
@@ -311,4 +313,19 @@ export class AppComponent {
       position: 'top',
     });
   }
+
+  //async initAndStartEyesOnPlugin(isAndroid: boolean) {
+  //  if (isAndroid) {
+  //    console.log('called EyesOn');
+  //    this.sdkEyesOn.initAgent().then(res => {
+  //      console.log('init', res);
+  //      this.sdkEyesOn.startAgent().then(res => {
+  //        console.log('start', res);
+  //        this.sdkEyesOn.onUpdatePermissions().then(res => {
+  //          console.log('onUpdatePermissions', res);
+  //        });
+  //      });
+  //    });
+  //  }
+  //}
 }
