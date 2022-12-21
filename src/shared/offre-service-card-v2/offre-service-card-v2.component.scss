@@ -1,7 +1,7 @@
 @import 'src/app/app';
 
 :host {
-  width: 100%;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 }
@@ -9,12 +9,13 @@
 .offre-service-item {
 	flex: 1;
 	display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px 5px 20px;
-  background-color: $white;
-  border-radius: 10px;
-  position: relative;
+	flex-direction: column;
+	align-items: center;
+	padding: 15px 5px 20px;
+	background-color: $white;
+	border-radius: 10px;
+	position: relative;
+
 	&.v2 {
 		.title {
 			color: black;
@@ -23,56 +24,66 @@
 			line-height: 1.17;
 			margin-bottom: 5px;
 		}
+
 		.subtitle {
 			font-family: 'HelveticaNeueLTStd-Roman';
 			font-size: 12px;
 			color: $gray;
+			text-align: center;
 		}
 	}
-  .icone {
-    width: 47px;
-    height: 47px;
-    margin-bottom: 2px;
-  }
-  .title {
-    font-family: 'HelveticaNeueLTStd-Roman';
-    font-size: 12px;
-    line-height: 1.17;
-    margin-bottom: 5px;
-  }
-  .subtitle {
-    font-family: 'HelveticaNeueLTStd-Bd';
-    font-size: 16px;
-  }
-  .badge-promo {
-    position: absolute;
-    top: 15px;
-    right: -5px;
-    .icon-container {
-      font-family: HelveticaNeueLTStd-Roman, sans-serif;
-      font-size: 10px;
-      background-color: $lightBlue;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 5px 10px;
-      width: 100%;
-      border-radius: 7% 0 0 7%;
-      .percent {
-        font-family: HelveticaNeueLTStd-Bd;
-        font-size: 16px;
-      }
-      .new {
-        font-family: HelveticaNeueLTStd-Bd;
-        font-size: 10px;
-      }
-    }
-    .triangle {
-      width: 0;
-      height: 0;
-      border-top: 5px solid $bluePopUp;
-      border-right: 5px solid transparent;
-      float: right;
-    }
-  }
+
+	.icone {
+		width: 47px;
+		height: 47px;
+		margin-bottom: 2px;
+	}
+
+	.title {
+		font-family: 'HelveticaNeueLTStd-Roman';
+		font-size: 12px;
+		line-height: 1.17;
+		margin-bottom: 5px;
+	}
+
+	.subtitle {
+		font-family: 'HelveticaNeueLTStd-Bd';
+		font-size: 16px;
+	}
+
+	.badge-promo {
+		position: absolute;
+		top: 15px;
+		right: -5px;
+
+		.icon-container {
+			font-family: HelveticaNeueLTStd-Roman, sans-serif;
+			font-size: 10px;
+			background-color: $lightBlue;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 5px 10px;
+			width: 100%;
+			border-radius: 7% 0 0 7%;
+
+			.percent {
+				font-family: HelveticaNeueLTStd-Bd;
+				font-size: 16px;
+			}
+
+			.new {
+				font-family: HelveticaNeueLTStd-Bd;
+				font-size: 10px;
+			}
+		}
+
+		.triangle {
+			width: 0;
+			height: 0;
+			border-top: 5px solid $bluePopUp;
+			border-right: 5px solid transparent;
+			float: right;
+		}
+	}
 }
