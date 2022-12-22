@@ -118,6 +118,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
     if (token) {
       let headers = req.headers;
+      headers = headers.set('Content-Type', 'application/json; charset=UTF-8');
       headers = headers.set('X-Selfcare-Source', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
       headers = headers.set('Access-Control-Allow-Origin', '*');
