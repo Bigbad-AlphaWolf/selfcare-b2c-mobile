@@ -32,26 +32,27 @@ export class TransactionItemComponent implements OnInit {
     this.onClick.emit(this.transaction);
     const dateDifference = new Date(this.transaction.currentDate).getTime() - new Date(this.transaction.operationDate).getTime();
     const isLessThan72h = dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
-    if (!isLessThan72h && this.transaction.typeAchat !== 'TRANSFER' && this.transaction.typeAchat !== 'TRANSFERT_ARGENT' && this.transaction.operationType !== 'DEBIT') return;
-    const omMsisdn = await this.omService.getOmMsisdn().toPromise();
-    this.oemLoggingService.registerEvent('clic_transfer_from_history', convertObjectToLoggingPayload({ msisdn: omMsisdn, transaction: this.transaction }));
-    if (!omMsisdn || omMsisdn === 'error') return;
-    const params: ModalSuccessModel = {};
-    params.paymentMod = PAYMENT_MOD_OM;
-    params.recipientMsisdn = this.transaction.msisdnReceiver;
-    params.msisdnBuyer = omMsisdn;
-    params.purchaseType = OPERATION_TRANSFER_OM;
-    params.historyTransactionItem = this.transaction;
-    params.success = true;
-    params.isOpenedFromHistory = true;
-    const modal = await this.modalController.create({
-      component: OperationSuccessFailModalPage,
-      cssClass: 'success-or-fail-modal',
-      componentProps: params,
-      backdropDismiss: true,
-    });
-    modal.onDidDismiss().then(() => {});
-    return await modal.present();
+    if (isLessThan72h && (this.transaction.typeAchat === 'TRANSFER' || this.transaction.typeAchat === 'TRANSFERT_ARGENT') && this.transaction.operationType === 'DEBIT') {
+      const omMsisdn = await this.omService.getOmMsisdn().toPromise();
+      this.oemLoggingService.registerEvent('clic_transfer_from_history', convertObjectToLoggingPayload({ msisdn: omMsisdn, transaction: this.transaction }));
+      if (!omMsisdn || omMsisdn === 'error') return;
+      const params: ModalSuccessModel = {};
+      params.paymentMod = PAYMENT_MOD_OM;
+      params.recipientMsisdn = this.transaction.msisdnReceiver;
+      params.msisdnBuyer = omMsisdn;
+      params.purchaseType = OPERATION_TRANSFER_OM;
+      params.historyTransactionItem = this.transaction;
+      params.success = true;
+      params.isOpenedFromHistory = true;
+      const modal = await this.modalController.create({
+        component: OperationSuccessFailModalPage,
+        cssClass: 'success-or-fail-modal',
+        componentProps: params,
+        backdropDismiss: true,
+      });
+      modal.onDidDismiss().then(() => {});
+      return await modal.present();
+    }
   }
 
   getTransactionIcon() {
