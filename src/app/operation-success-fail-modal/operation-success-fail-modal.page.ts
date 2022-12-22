@@ -30,6 +30,7 @@ import {
   OPERATION_ABONNEMENT_WIDO,
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_SEDDO_CREDIT,
+  OPERATION_CREATE_REQUEST_DEMANDE_TICKET,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -96,6 +97,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
   OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
+  OPERATION_CREATE_REQUEST_DEMANDE_TICKET = OPERATION_CREATE_REQUEST_DEMANDE_TICKET;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

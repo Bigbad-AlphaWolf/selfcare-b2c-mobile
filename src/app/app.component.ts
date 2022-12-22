@@ -30,6 +30,7 @@ import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
 import { DashboardService } from './services/dashboard-service/dashboard.service';
+import { EyesonSdkService } from './services/eyeson-service/eyeson-sdk.service';
 import { Deeplinks } from '@awesome-cordova-plugins/deeplinks/ngx';
 import { LoginPage } from './login/login.page';
 
@@ -267,8 +268,8 @@ export class AppComponent {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
       }
-      return;
     }
+    //this.initAndStartEyesOnPlugin(this.platform.is('android'));
     const imei = this.uid.IMEI;
     AppComponent.IMEI = imei;
     return imei;
@@ -330,4 +331,19 @@ export class AppComponent {
       position: 'top',
     });
   }
+
+  //async initAndStartEyesOnPlugin(isAndroid: boolean) {
+  //  if (isAndroid) {
+  //    console.log('called EyesOn');
+  //    this.sdkEyesOn.initAgent().then(res => {
+  //      console.log('init', res);
+  //      this.sdkEyesOn.startAgent().then(res => {
+  //        console.log('start', res);
+  //        this.sdkEyesOn.onUpdatePermissions().then(res => {
+  //          console.log('onUpdatePermissions', res);
+  //        });
+  //      });
+  //    });
+  //  }
+  //}
 }

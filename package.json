@@ -91,7 +91,6 @@
     "cordova-plugin-market": "^1.2.0",
     "cordova-plugin-splashscreen": "^6.0.0",
     "cordova-plugin-statusbar": "2.2.0",
-    "cordova-plugin-uid": "^1.3.0",
     "cordova-plugin-whitelist": "1.3.4",
     "core-js": "^2.5.4",
     "crypto-js": "^4.1.1",
@@ -141,6 +140,7 @@
     "cordova-plugin-inappbrowser": "file:cordova-plugin-inappbrowser",
     "cordova-plugin-ionic-webview": "file:cordova-plugin-ionic-webview",
     "cordova-plugin-network-information": "^3.0.0",
+    "cordova-plugin-uid": "file:cordova-plugin-uid",
     "cordova-plugin-x-socialsharing": "file:SocialSharing-PhoneGap-Plugin",
     "cordova-support-android-plugin": "^1.0.2",
     "cordova.plugin.dimelo": "file:DimeloPlugin",
@@ -190,8 +190,6 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-androidx": {},
       "cordova-plugin-androidx-adapter": {},
-      "cordova-plugin-uid": {},
-      "cordova-plugin-dreamover-uid": {},
       "cordova-plugin-camera-preview": {},
       "cordova-plugin-contacts": {},
       "cordova-plugin-geolocation": {
@@ -234,10 +232,24 @@
         "AUTOMATIC_SCREEN_REPORTING_ENABLED": "true",
         "IOS_FIREBASE_POD_VERSION": "~> 8.8.0"
       },
+      "cordova-plugin-uid": {},
       "ionic-plugin-deeplinks": {
         "URL_SCHEME": "orangeetmoi",
         "DEEPLINK_HOST": "myorangesn.page.link",
-        "ANDROID_PATH_PREFIX": "/"
+        "ANDROID_PATH_PREFIX": "/",
+        "DEEPLINK_SCHEME": "https",
+        "ANDROID_2_PATH_PREFIX": "/",
+        "ANDROID_3_PATH_PREFIX": "/",
+        "ANDROID_4_PATH_PREFIX": "/",
+        "ANDROID_5_PATH_PREFIX": "/",
+        "DEEPLINK_2_SCHEME": " ",
+        "DEEPLINK_2_HOST": " ",
+        "DEEPLINK_3_SCHEME": " ",
+        "DEEPLINK_3_HOST": " ",
+        "DEEPLINK_4_SCHEME": " ",
+        "DEEPLINK_4_HOST": " ",
+        "DEEPLINK_5_SCHEME": " ",
+        "DEEPLINK_5_HOST": " "
       }
     },
     "platforms": [

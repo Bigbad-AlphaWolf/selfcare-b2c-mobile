@@ -116,7 +116,7 @@
                 src="src/android/src/main/java/com/huawei/hms/cordova/analytics/HMSAnalyticsContentProvider.java"
                 target-dir="src/com/huawei/hms/cordova/analytics" />
     </platform>
-    <platform name="ios">
+    <!--<platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="HMSAnalytics">
                 <param name="ios-package" value="CordovaHMSAnalytics" />
@@ -136,5 +136,5 @@
                 <pod name="HiAnalytics" spec="6.3.2.301" />
             </pods>
         </podspec>
-    </platform>
+    </platform>-->
 </plugin>

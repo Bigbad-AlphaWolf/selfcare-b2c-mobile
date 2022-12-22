@@ -296,7 +296,7 @@ export class BottomSheetService {
       if (res?.direction === 'BACK') {
         const typeRattachment = res.typeRattachment;
         if (typeRattachment === 'MOBILE') {
-          this.openIdentifiedNumbersList();
+          this.openRattacheNumberModal();
         } else {
           this.openSelectRattachmentType(number);
         }

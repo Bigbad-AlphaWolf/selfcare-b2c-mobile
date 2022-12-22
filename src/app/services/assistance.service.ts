@@ -8,6 +8,9 @@ import { ItemBesoinAide, SubscriptionModel } from 'src/shared';
 import { map, switchMap } from 'rxjs/operators';
 import { createRequestOption } from '../utils/request-utils';
 import { ASSISTANCE_ENDPOINT } from './utils/services.endpoints';
+import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
+import { InfosAbonneModel } from '../models/infos-abonne.model';
+import { LocalStorageService } from './localStorage-service/local-storage.service';
 
 const { SERVICES_SERVICE, SERVER_API_URL, ACCOUNT_MNGT_SERVICE } = environment;
 // const questionsAnswersEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/besoin-aides/by-profil-formule`;
@@ -24,7 +27,9 @@ export class AssistanceService {
   constructor(
     private http: HttpClient,
     private dashboardService: DashboardService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private sdkDimelo: DimeloCordovaPlugin,
+    private localStorageService: LocalStorageService
   ) {}
 
   setUserNumber(msisdn: string) {
@@ -37,9 +42,8 @@ export class AssistanceService {
       switchMap((sub: SubscriptionModel) => {
         const codeFormule = sub.code;
         if (!codeFormule) return of([]);
-        req = {...req, formule:codeFormule};
+        req = { ...req, formule: codeFormule };
         return this.queryBesoinAides(req);
-
       })
     );
   }
@@ -47,10 +51,10 @@ export class AssistanceService {
   getListItemBesoinAide() {
     return this.listItemBesoinAide;
   }
-  queryBesoinAides(req?: any):  Observable<ItemBesoinAide[]>{
+  queryBesoinAides(req?: any): Observable<ItemBesoinAide[]> {
     const options = createRequestOption(req);
     return this.http.get<ItemBesoinAide[]>(`${ASSISTANCE_ENDPOINT}`, {
-      params: options
+      params: options,
     });
   }
 
@@ -65,5 +69,20 @@ export class AssistanceService {
 
   getAppVersionPublished() {
     return this.http.get(`${versionEndpoint}`);
+  }
+
+  openIbouDimeloChat() {
+    const user: InfosAbonneModel = this.localStorageService.getFromLocalStorage('userInfos');
+    const username = `${user?.givenName} ${user?.familyName}`;
+    const msisdn = this.dashboardService.getMainPhoneNumber();
+
+    this.sdkDimelo.openChat(username, msisdn).then(
+      () => {
+        console.log('chat open');
+      },
+      err => {
+        console.log('chat not open', err);
+      }
+    );
   }
 }

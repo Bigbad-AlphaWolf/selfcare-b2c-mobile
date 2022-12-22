@@ -17,6 +17,7 @@ import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
+export const CHAT_IBOU_PATH = 'parler-avec-ibou';
 @AutoUnsubscribe()
 @Component({
   selector: 'app-dashboard',
@@ -85,10 +86,10 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
-    // if (!this.isFirebaseTokenSent) {
-    //   this.authServ.UpdateNotificationInfo();
-    //   this.isFirebaseTokenSent = true;
-    // }
+    const route = this.router.url.replace('/', '');
+    if (route === CHAT_IBOU_PATH) {
+      this.openChatIbou();
+    }
   }
 
   ionViewDidEnter() {
@@ -201,5 +202,9 @@ export class DashboardPage implements OnInit, OnDestroy {
           console.log(err);
         }
       );
+  }
+
+  openChatIbou() {
+    this.assistanceService.openIbouDimeloChat();
   }
 }
