@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { CreateRequestOem } from 'src/app/models/create-request-oem.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { RequestOemService } from 'src/app/services/request-oem/request-oem.service';
 import { OPERATION_CREATE_REQUEST_DEMANDE_TICKET, REGEX_NUMBER_OM } from 'src/shared';
+import { MyFixeNumbersComponent } from './component/my-fixe-numbers/my-fixe-numbers.component';
 
 function msisdnValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -54,11 +55,36 @@ export class CreateRequestOrTroubleTicketPage implements OnInit {
   errorMsg: string;
   isProcessing: boolean;
   listFixNumbers: string[] = [];
-  constructor(private formBuilder: FormBuilder, private dashbService: DashboardService, private requestService: RequestOemService, private modalController: ModalController) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private dashbService: DashboardService,
+    private requestService: RequestOemService,
+    private modalController: ModalController,
+    public popoverController: PopoverController
+  ) {}
 
   ngOnInit() {
     this.fetchFixNumbers();
     this.setMainNumberAsDefault();
+  }
+
+  async openMyNumbers(ev: any) {
+    const popover = await this.popoverController.create({
+      component: MyFixeNumbersComponent,
+      componentProps: {
+        list: this.listFixNumbers,
+      },
+      event: ev,
+      translucent: true,
+    });
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+    if (data?.selectedNumber) {
+      this.requestForm.patchValue({
+        num_fix: data?.selectedNumber,
+      });
+    }
   }
 
   processForm() {
