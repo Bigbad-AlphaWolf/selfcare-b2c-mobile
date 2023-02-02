@@ -138,7 +138,9 @@ export class TransactionsHistoricComponent implements OnInit {
         this.isFetchingListAnnulationTrx = true;
         this.omService.getAnnulationTrxMarchandLite().subscribe((res: any) => {
           this.isFetchingListAnnulationTrx = false;
-          this.listAnnulationTrx = this.omService.mapToHistorikAchat(res?.content?.data?.content);
+          if (res) {
+            this.listAnnulationTrx = this.omService.mapToHistorikAchat(res?.content?.data?.content);
+          }
         });
       }
     });

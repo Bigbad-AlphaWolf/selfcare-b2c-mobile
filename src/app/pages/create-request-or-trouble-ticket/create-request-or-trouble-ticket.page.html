@@ -30,15 +30,12 @@
             <input formControlName="msisdn" matInput type="tel" />
             <small class="text-danger" *ngIf="requestForm?.get('msisdn')?.hasError('invalid')"> Veuillez renseigner un numéro valide</small>
           </mat-form-field>
-          <ion-list mode="ios">
-            <ion-item mode="ios" lines="none">
-              <ion-label mode="ios" class="scb-text-gray">Numéro Fixe *</ion-label>
-              <ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="num_fix">
-                <ion-select-option *ngFor="let number of listFixNumbers" [value]="number"><span>{{number}}</span></ion-select-option>
-              </ion-select>
-              <ion-icon name="chevron-down-outline" mode="ios" slot="end"></ion-icon>
-            </ion-item>
-          </ion-list>
+          <mat-form-field class="scb-input-row fix-numbers-block" appearance="outline">
+            <mat-label>Numéro Fixe &nbsp;&nbsp;*</mat-label>
+            <input formControlName="num_fix" matInput type="tel" />
+            <span *ngIf="listFixNumbers?.length" class="scb-text-orange my-numbers" (click)="openMyNumbers($event)"> Mes numéros </span>
+            <small class="text-danger" *ngIf="requestForm?.get('num_fix')?.hasError('required')"> Veuillez renseigner un numéro fixe</small>
+          </mat-form-field>
           <ion-list mode="ios">
             <ion-item mode="ios" lines="none">
               <ion-label mode="ios" class="scb-text-gray">Type *</ion-label>

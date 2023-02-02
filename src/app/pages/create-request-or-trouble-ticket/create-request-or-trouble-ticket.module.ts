@@ -8,9 +8,10 @@ import { CreateRequestOrTroubleTicketPageRoutingModule } from './create-request-
 
 import { CreateRequestOrTroubleTicketPage } from './create-request-or-trouble-ticket.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { MyFixeNumbersComponent } from './component/my-fixe-numbers/my-fixe-numbers.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, IonicModule, SharedModule, CreateRequestOrTroubleTicketPageRoutingModule],
-  declarations: [CreateRequestOrTroubleTicketPage],
+  declarations: [CreateRequestOrTroubleTicketPage, MyFixeNumbersComponent],
 })
 export class CreateRequestOrTroubleTicketPageModule {}
